@@ -32,7 +32,7 @@ And also has a `nvm` setup to work on a local environment.
 ### if you are working with the `devcontainer` setup
 
 1. Install the tools needed by the Go extension.
-2. Run `go mod edit <module name>` to rename the Go module.
+2. Run `go mod edit -module <module name>` to rename the Go module.
 3. Run `go mod tidy` to update Go dependencies.
 4. Rename the project inside the `package.json`.
 5. Run `npm install` to update your `package-lock.json`.

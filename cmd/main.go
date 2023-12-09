@@ -1,8 +1,8 @@
 package main
 
 import (
-	"github.com/NordGus/rom-stack/html"
-	"github.com/NordGus/rom-stack/staticfileserver"
+	"github.com/NordGus/solitaire/html"
+	"github.com/NordGus/solitaire/staticfileserver"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"log"
