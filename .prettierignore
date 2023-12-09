@@ -1,0 +1,6 @@
+*.go
+
+build
+staticfileserver/dist
+staticfileserver/public
+
