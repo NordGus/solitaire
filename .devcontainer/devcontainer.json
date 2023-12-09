@@ -1,5 +1,5 @@
 {
-  "name": "ROM Stack",
+  "name": "Solitaire",
   "build": {
     "args": {
       "GO_VERSION": "1.21.5",
@@ -19,7 +19,8 @@
         "rangav.vscode-thunder-client",
         "donjayamanne.githistory",
         "streetsidesoftware.code-spell-checker",
-        "alexcvzz.vscode-sqlite"
+        "alexcvzz.vscode-sqlite",
+        "bradlc.vscode-tailwindcss"
       ],
       "settings": {
         "go.useLanguageServer": true
@@ -39,12 +40,12 @@
     },
     "5173": {
       "label": "Vite Dev Server",
-      onAutoForward: "notify",
-      requireLocalPort: true
+      "onAutoForward": "notify",
+      "requireLocalPort": true
     }
   },
   "postCreateCommand": {
-    "go:dependencies": ["go", "mod", "download"],
-    "yarn:dependencies": ["yarn", "install"]
+    "go:dependencies": "sudo chmod -R a+w /go/pkg && go mod download",
+    "npm:dependencies": "npm install"
   }
 }

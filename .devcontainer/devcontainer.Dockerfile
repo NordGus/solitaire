@@ -4,10 +4,10 @@
 ARG GO_VERSION
 ARG ALPINE_VERSION
 ARG NODE_VERSION
-ARG GO_AIR_VERSION
 
 FROM node:${NODE_VERSION}-alpine${ALPINE_VERSION} as node
 FROM golang:${GO_VERSION}-alpine${ALPINE_VERSION}
+ARG GO_AIR_VERSION
 ARG USERNAME=vscode
 ARG USER_UID=1000
 ARG USER_GID=1000
@@ -46,4 +46,5 @@ RUN echo 'ZSH_THEME="robbyrussell"' >> "/home/$USERNAME/.zshrc" \
     && echo 'plugins=(git copyfile extract colorize dotenv encode64 golang yarn)' >> "/home/$USERNAME/.zshrc" \
     && echo 'source $ZSH/oh-my-zsh.sh' >> "/home/$USERNAME/.zshrc"
 RUN echo "exec `which zsh`" > "/home/$USERNAME/.ashrc"
+
 USER root
