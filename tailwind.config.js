@@ -10,7 +10,11 @@ export default {
     fontFamily: {
       sans: ["Lato", "system-ui", "sans-serif"],
     },
-    extend: {},
+    extend: {
+      gridTemplateRows: {
+        card: "min-content 1fr"
+      }
+    },
   },
   plugins: [],
 };

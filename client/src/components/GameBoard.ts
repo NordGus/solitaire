@@ -1,8 +1,6 @@
 export default class GameBoard extends HTMLElement {
   constructor() {
     super();
-
-    console.log("hello world")
   }
 }
 
