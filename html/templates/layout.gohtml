@@ -10,30 +10,63 @@
     </head>
     <body class="m-0 p-0 flex flex-col justify-center items-center h-[100vh] bg-neutral-200 dark:bg-neutral-800 text-neutral-900 dark:text-neutral-100">
         <game-board class="block m-0 p-0 relative w-full h-full">
-            <game-slots class="flex m-0 p-0 w-full h-full justify-around">
-                <game-slot class="w-[8rem] h-[13rem] rounded border-[0.25rem] border-amber-600">
+            <game-slots class="flex m-0 p-0 w-full h-full justify-around items-stretch">
+                <game-slot
+                        class="w-[9rem] after:rounded after:block after:border-[0.25rem] after:border-amber-600 after:w-full after:h-[14rem]"
+                        number="0"
+                >
                     <game-card
-                            class="grid grid-cols-1 grid-rows-card absolute top-0 left-0 w-[8rem] h-[13rem] mb-2 p-2 bg-amber-200 rounded cursor-move"
+                            class="grid grid-cols-1 grid-rows-card absolute w-[9rem] h-[14rem] p-2 bg-amber-200 rounded cursor-move"
                             number="5"
                             family="swords"
                     >
-                        <div class="flex justify-start items-center">
+                        <div class="flex justify-start items-center mb-2 gap-1 font-bold">
                             <span>5</span>
                             <span>swords</span>
                         </div>
                         <span class="w-full h-full"></span>
                     </game-card>
                 </game-slot>
-                <game-slot class="w-[8rem] h-[13rem] rounded border-[0.25rem] border-amber-600"></game-slot>
-                <game-slot class="w-[8rem] h-[13rem] rounded border-[0.25rem] border-amber-600"></game-slot>
-                <game-slot class="w-[8rem] h-[13rem] rounded border-[0.25rem] border-amber-600"></game-slot>
-                <game-slot class="w-[8rem] h-[13rem] rounded border-[0.25rem] border-amber-600"></game-slot>
-                <game-slot class="w-[8rem] h-[13rem] rounded border-[0.25rem] border-amber-600"></game-slot>
-                <game-slot class="w-[8rem] h-[13rem] rounded border-[0.25rem] border-amber-600"></game-slot>
-                <game-slot class="w-[8rem] h-[13rem] rounded border-[0.25rem] border-amber-600"></game-slot>
-                <game-slot class="w-[8rem] h-[13rem] rounded border-[0.25rem] border-amber-600"></game-slot>
-                <game-slot class="w-[8rem] h-[13rem] rounded border-[0.25rem] border-amber-600"></game-slot>
-                <game-slot class="w-[8rem] h-[13rem] rounded border-[0.25rem] border-amber-600"></game-slot>
+                <game-slot
+                        class="w-[9rem] after:rounded after:block after:border-[0.25rem] after:border-amber-600 after:w-full after:h-[14rem]"
+                        number="1"
+                ></game-slot>
+                <game-slot
+                        class="w-[9rem] after:rounded after:block after:border-[0.25rem] after:border-amber-600 after:w-full after:h-[14rem]"
+                        number="2"
+                ></game-slot>
+                <game-slot
+                        class="w-[9rem] after:rounded after:block after:border-[0.25rem] after:border-amber-600 after:w-full after:h-[14rem]"
+                        number="3"
+                ></game-slot>
+                <game-slot
+                        class="w-[9rem] after:rounded after:block after:border-[0.25rem] after:border-amber-600 after:w-full after:h-[14rem]"
+                        number="4"
+                ></game-slot>
+                <game-slot
+                        class="w-[9rem] after:rounded after:block after:border-[0.25rem] after:border-amber-600 after:w-full after:h-[14rem]"
+                        number="5"
+                ></game-slot>
+                <game-slot
+                        class="w-[9rem] after:rounded after:block after:border-[0.25rem] after:border-amber-600 after:w-full after:h-[14rem]"
+                        number="6"
+                ></game-slot>
+                <game-slot
+                        class="w-[9rem] after:rounded after:block after:border-[0.25rem] after:border-amber-600 after:w-full after:h-[14rem]"
+                        number="7"
+                ></game-slot>
+                <game-slot
+                        class="w-[9rem] after:rounded after:block after:border-[0.25rem] after:border-amber-600 after:w-full after:h-[14rem]"
+                        number="8"
+                ></game-slot>
+                <game-slot
+                        class="w-[9rem] after:rounded after:block after:border-[0.25rem] after:border-amber-600 after:w-full after:h-[14rem]"
+                        number="9"
+                ></game-slot>
+                <game-slot
+                        class="w-[9rem] after:rounded after:block after:border-[0.25rem] after:border-amber-600 after:w-full after:h-[14rem]"
+                        number="10"
+                ></game-slot>
             </game-slots>
         </game-board>
         <script type="module" src="/dist/application.js"></script>
