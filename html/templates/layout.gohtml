@@ -1,3 +1,22 @@
+{{ define "card" }}
+    <game-card
+            class="grid grid-cols-1 grid-rows-card absolute w-[9rem] h-[14rem] p-2 bg-amber-200 rounded cursor-move"
+            number="{{ .Number }}"
+            family="{{ .Family }}"
+            slot="{{ .Slot }}"
+    >
+        <div class="flex justify-start items-center mb-2 gap-1 font-bold z-1">
+            <span>{{ .Number }}</span>
+            <span>{{ .Family }}</span>
+        </div>
+        <span class="w-full h-full"></span>
+    </game-card>
+{{ end }}
+
+{{ define "slot" }}
+    <game-slot class="w-[9rem] h-[14rem] rounded border-[0.25rem] border-amber-600" number="{{ .Number }}"></game-slot>
+{{ end }}
+
 <!doctype html>
 <html lang="en">
     <head>
@@ -10,64 +29,12 @@
     </head>
     <body class="m-0 p-0 flex flex-col justify-center items-center h-[100vh] bg-neutral-200 dark:bg-neutral-800 text-neutral-900 dark:text-neutral-100">
         <game-board class="block m-0 p-0 relative w-full h-full">
-            <div id="play-area" class="flex m-0 p-0 w-full h-full justify-around items-stretch">
-                <game-slot
-                        class="w-[9rem] after:rounded after:block after:border-[0.25rem] after:border-amber-600 after:w-full after:h-[14rem]"
-                        number="0"
-                ></game-slot>
-                <game-slot
-                        class="w-[9rem] after:rounded after:block after:border-[0.25rem] after:border-amber-600 after:w-full after:h-[14rem]"
-                        number="1"
-                ></game-slot>
-                <game-slot
-                        class="w-[9rem] after:rounded after:block after:border-[0.25rem] after:border-amber-600 after:w-full after:h-[14rem]"
-                        number="2"
-                ></game-slot>
-                <game-slot
-                        class="w-[9rem] after:rounded after:block after:border-[0.25rem] after:border-amber-600 after:w-full after:h-[14rem]"
-                        number="3"
-                ></game-slot>
-                <game-slot
-                        class="w-[9rem] after:rounded after:block after:border-[0.25rem] after:border-amber-600 after:w-full after:h-[14rem]"
-                        number="4"
-                ></game-slot>
-                <game-slot
-                        class="w-[9rem] after:rounded after:block after:border-[0.25rem] after:border-amber-600 after:w-full after:h-[14rem]"
-                        number="5"
-                ></game-slot>
-                <game-slot
-                        class="w-[9rem] after:rounded after:block after:border-[0.25rem] after:border-amber-600 after:w-full after:h-[14rem]"
-                        number="6"
-                ></game-slot>
-                <game-slot
-                        class="w-[9rem] after:rounded after:block after:border-[0.25rem] after:border-amber-600 after:w-full after:h-[14rem]"
-                        number="7"
-                ></game-slot>
-                <game-slot
-                        class="w-[9rem] after:rounded after:block after:border-[0.25rem] after:border-amber-600 after:w-full after:h-[14rem]"
-                        number="8"
-                ></game-slot>
-                <game-slot
-                        class="w-[9rem] after:rounded after:block after:border-[0.25rem] after:border-amber-600 after:w-full after:h-[14rem]"
-                        number="9"
-                ></game-slot>
-                <game-slot
-                        class="w-[9rem] after:rounded after:block after:border-[0.25rem] after:border-amber-600 after:w-full after:h-[14rem]"
-                        number="10"
-                ></game-slot>
+            <div id="play-area" class="flex m-0 p-0 w-full h-full justify-around items-start">
+                {{ range .Slots }}
+                    {{ block "slot" . }}{{ end }}
+                {{ end }}
             </div>
-            <game-card
-                    class="grid grid-cols-1 grid-rows-card absolute w-[9rem] h-[14rem] p-2 bg-amber-200 rounded cursor-move"
-                    number="5"
-                    family="swords"
-                    slot="0"
-            >
-                <div class="flex justify-start items-center mb-2 gap-1 font-bold z-1">
-                    <span>5</span>
-                    <span>swords</span>
-                </div>
-                <span class="w-full h-full"></span>
-            </game-card>
+            {{ block "card" .Card }}{{ end }}
         </game-board>
         <script type="module" src="/dist/application.js"></script>
     </body>

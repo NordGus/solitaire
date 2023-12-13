@@ -1,45 +1,38 @@
-import GameCard, { CardMovedEvent } from "@Components/GameCard.ts";
-
-type SlotNumber = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10
-
-export type SlotMagnetizeEvent = { slot: GameSlot, card: GameCard }
+import collides from "@/helpers/collides.ts";
+import { CardMagnetizeToEvent, CardMovedEvent, SlotNumber } from "@/types.ts";
+import GameCard from "@Components/GameCard.ts";
 
 export default class GameSlot extends HTMLElement {
+  private coveredBy: GameCard | null
+
   public readonly number: SlotNumber
 
   constructor() {
     super();
 
     this.number = parseInt(this.attributes.getNamedItem("number")!.value) as SlotNumber
+    this.coveredBy = null
   }
 
   connectedCallback(): void {
-    window.addEventListener<CustomEvent<CardMovedEvent>>("card:moved", this.onCardMoved())
+    window.addEventListener("card:moved", this.onCardMoved() as EventListener)
   }
 
   disconnectedCallback(): void {
-    window.removeEventListener<CustomEvent<CardMovedEvent>>("card:moved", this.onCardMoved())
+    window.removeEventListener("card:moved", this.onCardMoved() as EventListener)
   }
 
   private onCardMoved(): (event: CustomEvent<CardMovedEvent>) => void {
     return (event: CustomEvent<CardMovedEvent>) => {
-      const card: GameCard = event.detail.card
-      const eventInitDict: CustomEventInit<SlotMagnetizeEvent> = { detail: { slot: this, card: card } }
+      if (this.coveredBy !== null) return;
 
-      if (this.number === card.cardSlot.number || !this.collidesWithCard(card)) {
-        window.dispatchEvent(new CustomEvent<SlotMagnetizeEvent>("slot:magnetize:ignore", eventInitDict))
-      } else {
-        window.dispatchEvent(new CustomEvent<SlotMagnetizeEvent>("slot:magnetize", eventInitDict))
+      const card: GameCard = event.detail.card
+      const eventInitDict: CustomEventInit<CardMagnetizeToEvent> = { detail: { target: this, card: card } }
+
+      if (collides(card.getBoundingClientRect(), this.getBoundingClientRect())) {
+        window.dispatchEvent(new CustomEvent<CardMagnetizeToEvent>("card:magnetize:to", eventInitDict))
       }
     }
-  }
-
-  private collidesWithCard(card: GameCard): boolean {
-    const cardBox = card.getBoundingClientRect()
-    const slotBox = this.getBoundingClientRect()
-
-    return !((cardBox.right * 0.8) < slotBox.left ||
-      (cardBox.left * 0.8) > slotBox.right)
   }
 }
 

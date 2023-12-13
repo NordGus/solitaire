@@ -1,9 +1,5 @@
-import GameSlot, { SlotMagnetizeEvent } from "@Components/GameSlot.ts";
-
-type CardFamily = "swords" | "clubs" | "golds" | "cups" | "arcana"
-type CardNumber = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18 | 19 | 20 | 21
-
-export type CardMovedEvent = { card: GameCard }
+import { CardFamily, CardMagnetizeToEvent, CardMovedEvent, CardNumber, SlotNumber } from "@/types.ts";
+import GameSlot from "@Components/GameSlot.ts";
 
 function getCardFamilyColorClass(family: CardFamily): string {
   if (family === "swords") return "text-blue-400"
@@ -22,13 +18,13 @@ enum State {
 }
 
 export default class GameCard extends HTMLElement {
-  private readonly MAGNETISM_COUNTER_LIMIT: number = 10
-
   private initialX: number
   private initialY: number
-  private currentSlot: GameSlot
+
+  private covers: GameCard | GameSlot
+  private coveredBy: GameCard | null
+
   private state: State
-  private magnetismCounter: number
 
   public readonly number: CardNumber
   public readonly family: CardFamily
@@ -39,18 +35,11 @@ export default class GameCard extends HTMLElement {
     this.state = State.Resting
     this.initialX = 0
     this.initialY = 0
-    this.magnetismCounter = 0
-
     this.number = parseInt(this.attributes.getNamedItem("number")!.value) as CardNumber
     this.family = this.attributes.getNamedItem("family")!.value as CardFamily
 
-    this.style.top = `${this.parentElement!.getBoundingClientRect().top}`
-    this.style.left = `${this.parentElement!.getBoundingClientRect().left}`
-    this.currentSlot = this.parentElement! as GameSlot
-  }
-
-  get cardSlot(): GameSlot {
-    return this.currentSlot
+    this.covers = this
+    this.coveredBy = null
   }
 
   connectedCallback(): void {
@@ -59,10 +48,18 @@ export default class GameCard extends HTMLElement {
     this.addEventListener("mouseup", this.onStopMovement())
     this.addEventListener("mouseleave", this.onStopMovement())
 
-    window.addEventListener<CustomEvent<CardMovedEvent>>("slot:magnetize", this.onSlotMagnetize())
-    window.addEventListener<CustomEvent<CardMovedEvent>>("slot:magnetize:ignore", this.onSlotMagnetizeIgnore())
+    window.addEventListener("card:magnetize:to", this.onMagnetizeTo() as EventListener)
 
     this.classList.toggle(getCardFamilyColorClass(this.family), true)
+
+    if (this.attributes.getNamedItem("slot")!.value) {
+      const slotNumber = parseInt(this.attributes.getNamedItem("slot")!.value) as SlotNumber
+      this.covers = document.querySelector<GameSlot>(`#play-area game-slot[number='${slotNumber}']`)!
+
+      this.style.top = `${this.covers.getBoundingClientRect().top}px`
+      this.style.left = `${this.covers.getBoundingClientRect().left}px`
+      // TODO: Attach to slot
+    }
   }
 
   disconnectedCallback(): void {
@@ -71,8 +68,7 @@ export default class GameCard extends HTMLElement {
     this.removeEventListener("mouseup", this.onStopMovement())
     this.removeEventListener("mouseleave", this.onStopMovement())
 
-    window.removeEventListener<CustomEvent<CardMovedEvent>>("slot:magnetize", this.onSlotMagnetize())
-    window.removeEventListener<CustomEvent<CardMovedEvent>>("slot:magnetize:ignore", this.onSlotMagnetizeIgnore())
+    window.removeEventListener("card:magnetize:to", this.onMagnetizeTo() as EventListener)
   }
 
   private onStartMovement(): (event: MouseEvent) => void {
@@ -80,7 +76,6 @@ export default class GameCard extends HTMLElement {
       event.preventDefault();
 
       this.state = State.Moving;
-      this.magnetismCounter = 0
       this.initialX = event.clientX;
       this.initialY = event.clientY;
     }
@@ -111,42 +106,22 @@ export default class GameCard extends HTMLElement {
     }
   }
 
-  private onSlotMagnetize(): (event: CustomEvent<SlotMagnetizeEvent>) => void {
-    return (event: CustomEvent<SlotMagnetizeEvent>) => {
-      if (this.state !== State.Settling) return;
+  private onMagnetizeTo(): (event: CustomEvent<CardMagnetizeToEvent>) => void {
+    return (event: CustomEvent<CardMagnetizeToEvent>) => {
+      if (this.state !== State.Settling && State.Resting) return;
       if (this.number !== event.detail.card.number) return;
       if (this.family !== event.detail.card.family) return;
 
       this.state = State.Resting
 
-      console.log(event);
+      const covers: GameSlot | GameCard = event.detail.target
 
-      const slot: GameSlot = event.detail.slot
+      this.style.top = `${covers.getBoundingClientRect().top}px`
+      this.style.left = `${covers.getBoundingClientRect().left}px`
 
-      this.style.top = `${slot.getBoundingClientRect().top}px`
-      this.style.left = `${slot.getBoundingClientRect().left}px`
-
-      const node = this.currentSlot.removeChild(this)
-      this.currentSlot = slot
-      slot.appendChild(node)
-    }
-  }
-
-  private onSlotMagnetizeIgnore(): (event: CustomEvent<SlotMagnetizeEvent>) => void {
-    return (event: CustomEvent<SlotMagnetizeEvent>) => {
-      if (this.state !== State.Settling) return;
-      if (this.number !== event.detail.card.number) return;
-      if (this.family !== event.detail.card.family) return;
-
-      console.log(event);
-
-      this.magnetismCounter++
-
-      if (this.magnetismCounter < this.MAGNETISM_COUNTER_LIMIT) return;
-
-      this.style.top = `${this.currentSlot.getBoundingClientRect().top}px`
-      this.style.left = `${this.currentSlot.getBoundingClientRect().left}px`
-      this.magnetismCounter = 0
+      // TODO: detach from old
+      // TODO: attach to new
+      this.covers = covers
     }
   }
 }
