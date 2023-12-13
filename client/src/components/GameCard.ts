@@ -1,6 +1,6 @@
 import getIntersectionRect from "@/helpers/getIntersectionRect.ts";
 import rectArea from "@/helpers/rectArea.ts";
-import { CardFamily, CardMagnetizeToEvent, CardMovedEvent, CardNumber, SlotNumber } from "@/types.ts";
+import { CardFamily, CardMagnetizeToEvent, CardMovedEvent, CardNumber, SlotNumber, StackableEvent } from "@/types.ts";
 import GameSlot from "@Components/GameSlot.ts";
 
 function getCardFamilyColorClass(family: CardFamily): string {
@@ -58,14 +58,14 @@ export default class GameCard extends HTMLElement {
 
     this.classList.toggle(getCardFamilyColorClass(this.family), true);
 
+    // TODO: implement a event listener to attach this.covers
     if (this.attributes.getNamedItem("slot")!.value) {
       const slotNumber = parseInt(this.attributes.getNamedItem("slot")!.value) as SlotNumber;
       this.covers = document.querySelector<GameSlot>(`#play-area game-slot[number='${slotNumber}']`)!;
-
-      this.style.top = `${this.covers.getBoundingClientRect().top}px`;
-      this.style.left = `${this.covers.getBoundingClientRect().left}px`;
-      // TODO: Attach to slot
     }
+
+    this.style.top = `${this.covers.getBoundingClientRect().top}px`;
+    this.style.left = `${this.covers.getBoundingClientRect().left}px`;
   }
 
   disconnectedCallback(): void {
@@ -148,10 +148,20 @@ export default class GameCard extends HTMLElement {
       this.targetMagnetismPower = targetMagnetismPower;
       this.style.top = `${covers.getBoundingClientRect().top}px`;
       this.style.left = `${covers.getBoundingClientRect().left}px`;
-      this.covers = covers;
 
-      // TODO: detach from old
-      // TODO: attach to new
+      // uncover previous this.covers
+      window.dispatchEvent(new CustomEvent<StackableEvent>(
+        "stackable:pop",
+        { detail: { stackable: this.covers, caller: this } }
+      ));
+
+      // cover new this.covers
+      window.dispatchEvent(new CustomEvent<StackableEvent>(
+        "stackable:push",
+        { detail: { stackable: covers, caller: this } }
+      ));
+
+      this.covers = covers;
     }
   }
 }

@@ -7,12 +7,7 @@ export type SlotNumber = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10;
 
 export type Rect = { top: number, bottom: number, left: number, right: number };
 
-export type CardMovedEvent = {
-  card: GameCard,
-  state: {
-    card: { rect: Rect }
-  }
-};
+export type CardMovedEvent = { card: GameCard, state: { card: { rect: Rect } } };
 export type CardMagnetizeToEvent = {
   card: GameCard,
   target: GameCard | GameSlot,
@@ -21,3 +16,4 @@ export type CardMagnetizeToEvent = {
     target: { rect: Rect }
   }
 };
+export type StackableEvent = { stackable: GameCard | GameSlot, caller: GameCard };

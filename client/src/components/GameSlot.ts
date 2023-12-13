@@ -1,9 +1,8 @@
 import collides from "@/helpers/collides.ts";
-import { CardMagnetizeToEvent, CardMovedEvent, SlotNumber } from "@/types.ts";
+import { CardMagnetizeToEvent, CardMovedEvent, SlotNumber, StackableEvent } from "@/types.ts";
 import GameCard from "@Components/GameCard.ts";
 
 export default class GameSlot extends HTMLElement {
-  // TODO: implement an event listener to attach and detach a card to the slot
   private coveredBy: GameCard | null
 
   public readonly number: SlotNumber
@@ -17,10 +16,16 @@ export default class GameSlot extends HTMLElement {
 
   connectedCallback(): void {
     window.addEventListener("card:moved", this.onCardMoved() as EventListener);
+
+    window.addEventListener("stackable:push", this.onPush() as EventListener);
+    window.addEventListener("stackable:pop", this.onPop() as EventListener);
   }
 
   disconnectedCallback(): void {
     window.removeEventListener("card:moved", this.onCardMoved() as EventListener);
+
+    window.removeEventListener("stackable:push", this.onPush() as EventListener);
+    window.removeEventListener("stackable:pop", this.onPop() as EventListener);
   }
 
   private onCardMoved(): (event: CustomEvent<CardMovedEvent>) => void {
@@ -42,6 +47,25 @@ export default class GameSlot extends HTMLElement {
       if (collides(event.detail.state.card.rect, eventInitDict.detail!.state.target.rect)) {
         window.dispatchEvent(new CustomEvent<CardMagnetizeToEvent>("card:magnetize:to", eventInitDict));
       }
+    }
+  }
+
+  private onPush(): (event: CustomEvent<StackableEvent>) => void {
+    return (event: CustomEvent<StackableEvent>) => {
+      if (event.detail.stackable !== this) return;
+      if (this.coveredBy !== null) return;
+
+      this.coveredBy = event.detail.caller;
+    }
+  }
+
+  private onPop(): (event: CustomEvent<StackableEvent>) => void {
+    return (event: CustomEvent<StackableEvent>) => {
+      if (event.detail.stackable !== this) return;
+      if (this.coveredBy === null) return;
+      if (event.detail.caller !== this.coveredBy) return;
+
+      this.coveredBy = null;
     }
   }
 }
