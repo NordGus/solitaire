@@ -99,14 +99,15 @@ export default class GameCard extends HTMLElement {
 
       this.state = State.Settling;
 
+      const domRect: DOMRect = this.getBoundingClientRect();
       const eventInitDict: CustomEventInit<CardMovedEvent> = {
         detail: {
           card: this,
           state: {
-            card: { rect: this.getBoundingClientRect() }
+            card: { rect: { top: domRect.top, bottom: domRect.bottom, right: domRect.right, left: domRect.left } },
           }
         }
-      }
+      };
 
       window.dispatchEvent(new CustomEvent<CardMovedEvent>("card:moved", eventInitDict));
 
@@ -120,7 +121,7 @@ export default class GameCard extends HTMLElement {
 
   private onMagnetizeTo(): (event: CustomEvent<CardMagnetizeToEvent>) => void {
     return (event: CustomEvent<CardMagnetizeToEvent>) => {
-      if (this.state !== State.Settling && State.Resting) return;
+      if (this.state !== State.Settling && this.state !== State.Resting) return;
       if (this.number !== event.detail.card.number) return;
       if (this.family !== event.detail.card.family) return;
 
