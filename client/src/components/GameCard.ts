@@ -1,3 +1,5 @@
+import getIntersectionRect from "@/helpers/getIntersectionRect.ts";
+import rectArea from "@/helpers/rectArea.ts";
 import { CardFamily, CardMagnetizeToEvent, CardMovedEvent, CardNumber, SlotNumber } from "@/types.ts";
 import GameSlot from "@Components/GameSlot.ts";
 
@@ -20,6 +22,7 @@ enum State {
 export default class GameCard extends HTMLElement {
   private initialX: number
   private initialY: number
+  private targetMagnetismPower: number
 
   private covers: GameCard | GameSlot
   // private coveredBy: GameCard | null
@@ -32,14 +35,17 @@ export default class GameCard extends HTMLElement {
   constructor() {
     super();
 
-    this.state = State.Resting;
     this.initialX = 0;
     this.initialY = 0;
-    this.number = parseInt(this.attributes.getNamedItem("number")!.value) as CardNumber;
-    this.family = this.attributes.getNamedItem("family")!.value as CardFamily;
+    this.targetMagnetismPower = 0;
 
     this.covers = this;
     // this.coveredBy = null;
+
+    this.state = State.Resting;
+
+    this.number = parseInt(this.attributes.getNamedItem("number")!.value) as CardNumber;
+    this.family = this.attributes.getNamedItem("family")!.value as CardFamily;
   }
 
   connectedCallback(): void {
@@ -111,6 +117,8 @@ export default class GameCard extends HTMLElement {
 
       window.dispatchEvent(new CustomEvent<CardMovedEvent>("card:moved", eventInitDict));
 
+      this.targetMagnetismPower = 0;
+
       if (this.state !== State.Settling) return;
 
       this.state = State.Resting;
@@ -125,18 +133,25 @@ export default class GameCard extends HTMLElement {
       if (this.number !== event.detail.card.number) return;
       if (this.family !== event.detail.card.family) return;
 
-      this.state = State.Resting;
+      const targetMagnetismPower: number = rectArea(getIntersectionRect(
+        event.detail.state.card.rect,
+        event.detail.state.target.rect
+      ));
+
+      console.log("prev magnetism power", this.targetMagnetismPower, "current magnetism power", targetMagnetismPower, event.detail.target)
+
+      if (this.targetMagnetismPower > targetMagnetismPower) return;
 
       const covers: GameSlot | GameCard = event.detail.target;
 
-      // TODO: Implement like a weighted algorithm to check which target is more adequate to be covered by the card
-
+      this.state = State.Resting;
+      this.targetMagnetismPower = targetMagnetismPower;
       this.style.top = `${covers.getBoundingClientRect().top}px`;
       this.style.left = `${covers.getBoundingClientRect().left}px`;
+      this.covers = covers;
 
       // TODO: detach from old
       // TODO: attach to new
-      this.covers = covers;
     }
   }
 }
