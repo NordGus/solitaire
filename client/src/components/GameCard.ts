@@ -99,17 +99,16 @@ export default class GameCard extends HTMLElement {
 
       this.state = State.Settling;
 
-      window.dispatchEvent(new CustomEvent<CardMovedEvent>(
-        "card:moved",
-        {
-          detail: {
-            card: this,
-            state: {
-              card: { rect: this.getBoundingClientRect() }
-            }
+      const eventInitDict: CustomEventInit<CardMovedEvent> = {
+        detail: {
+          card: this,
+          state: {
+            card: { rect: this.getBoundingClientRect() }
           }
-        })
-      );
+        }
+      }
+
+      window.dispatchEvent(new CustomEvent<CardMovedEvent>("card:moved", eventInitDict));
 
       if (this.state !== State.Settling) return;
 
@@ -128,6 +127,8 @@ export default class GameCard extends HTMLElement {
       this.state = State.Resting;
 
       const covers: GameSlot | GameCard = event.detail.target;
+
+      // TODO: Implement like a weighted algorithm to check which target is more adequate to be covered by the card
 
       this.style.top = `${covers.getBoundingClientRect().top}px`;
       this.style.left = `${covers.getBoundingClientRect().left}px`;
