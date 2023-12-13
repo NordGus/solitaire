@@ -15,58 +15,50 @@ export default class GameSlot extends HTMLElement {
   }
 
   connectedCallback(): void {
-    window.addEventListener("card:moved", this.onCardMoved() as EventListener);
-
-    window.addEventListener("stackable:push", this.onPush() as EventListener);
-    window.addEventListener("stackable:pop", this.onPop() as EventListener);
+    window.addEventListener("card:moved", this.onCardMoved.bind(this) as EventListener);
+    window.addEventListener("stackable:push", this.onPush.bind(this) as EventListener);
+    window.addEventListener("stackable:pop", this.onPop.bind(this) as EventListener);
   }
 
   disconnectedCallback(): void {
-    window.removeEventListener("card:moved", this.onCardMoved() as EventListener);
-
-    window.removeEventListener("stackable:push", this.onPush() as EventListener);
-    window.removeEventListener("stackable:pop", this.onPop() as EventListener);
+    window.removeEventListener("card:moved", this.onCardMoved.bind(this) as EventListener);
+    window.removeEventListener("stackable:push", this.onPush.bind(this) as EventListener);
+    window.removeEventListener("stackable:pop", this.onPop.bind(this) as EventListener);
   }
 
-  private onCardMoved(): (event: CustomEvent<CardMovedEvent>) => void {
-    return (event: CustomEvent<CardMovedEvent>) => {
-      if (this.coveredBy !== null) return;
+  private onCardMoved(event: CustomEvent<CardMovedEvent>): void {
+    if (this.coveredBy !== null) return;
 
-      const domRect: DOMRect = this.getBoundingClientRect();
-      const eventInitDict: CustomEventInit<CardMagnetizeToEvent> = {
-        detail: {
-          target: this,
-          card: event.detail.card,
-          state: {
-            card: { rect: event.detail.state.card.rect },
-            target: { rect: { top: domRect.top, bottom: domRect.bottom, left: domRect.left, right: domRect.right } }
-          }
+    const domRect: DOMRect = this.getBoundingClientRect();
+    const eventInitDict: CustomEventInit<CardMagnetizeToEvent> = {
+      detail: {
+        target: this,
+        card: event.detail.card,
+        state: {
+          card: { rect: event.detail.state.card.rect },
+          target: { rect: { top: domRect.top, bottom: domRect.bottom, left: domRect.left, right: domRect.right } }
         }
-      };
-
-      if (collides(event.detail.state.card.rect, eventInitDict.detail!.state.target.rect)) {
-        window.dispatchEvent(new CustomEvent<CardMagnetizeToEvent>("card:magnetize:to", eventInitDict));
       }
+    };
+
+    if (collides(event.detail.state.card.rect, eventInitDict.detail!.state.target.rect)) {
+      window.dispatchEvent(new CustomEvent<CardMagnetizeToEvent>("card:magnetize:to", eventInitDict));
     }
   }
 
-  private onPush(): (event: CustomEvent<StackableEvent>) => void {
-    return (event: CustomEvent<StackableEvent>) => {
-      if (event.detail.stackable !== this) return;
-      if (this.coveredBy !== null) return;
+  private onPush(event: CustomEvent<StackableEvent>): void {
+    if (event.detail.stackable !== this) return;
+    if (this.coveredBy !== null) return;
 
-      this.coveredBy = event.detail.caller;
-    }
+    this.coveredBy = event.detail.caller;
   }
 
-  private onPop(): (event: CustomEvent<StackableEvent>) => void {
-    return (event: CustomEvent<StackableEvent>) => {
-      if (event.detail.stackable !== this) return;
-      if (this.coveredBy === null) return;
-      if (event.detail.caller !== this.coveredBy) return;
+  private onPop(event: CustomEvent<StackableEvent>): void {
+    if (event.detail.stackable !== this) return;
+    if (this.coveredBy === null) return;
+    if (event.detail.caller !== this.coveredBy) return;
 
-      this.coveredBy = null;
-    }
+    this.coveredBy = null;
   }
 }
 

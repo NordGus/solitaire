@@ -49,12 +49,12 @@ export default class GameCard extends HTMLElement {
   }
 
   connectedCallback(): void {
-    this.addEventListener("mousedown", this.onStartMovement());
-    this.addEventListener("mousemove", this.onMove());
-    this.addEventListener("mouseup", this.onStopMovement());
-    this.addEventListener("mouseleave", this.onStopMovement());
+    this.addEventListener("mousedown", this.onStartMovement.bind(this));
+    this.addEventListener("mousemove", this.onMove.bind(this));
+    this.addEventListener("mouseup", this.onStopMovement.bind(this));
+    this.addEventListener("mouseleave", this.onStopMovement.bind(this));
 
-    window.addEventListener("card:magnetize:to", this.onMagnetizeTo() as EventListener);
+    window.addEventListener("card:magnetize:to", this.onMagnetizeTo.bind(this) as EventListener);
 
     this.classList.toggle(getCardFamilyColorClass(this.family), true);
 
@@ -69,100 +69,90 @@ export default class GameCard extends HTMLElement {
   }
 
   disconnectedCallback(): void {
-    this.removeEventListener("mousedown", this.onStartMovement());
-    this.removeEventListener("mousemove", this.onMove());
-    this.removeEventListener("mouseup", this.onStopMovement());
-    this.removeEventListener("mouseleave", this.onStopMovement());
+    this.removeEventListener("mousedown", this.onStartMovement.bind(this));
+    this.removeEventListener("mousemove", this.onMove.bind(this));
+    this.removeEventListener("mouseup", this.onStopMovement.bind(this));
+    this.removeEventListener("mouseleave", this.onStopMovement.bind(this));
 
-    window.removeEventListener("card:magnetize:to", this.onMagnetizeTo() as EventListener);
+    window.removeEventListener("card:magnetize:to", this.onMagnetizeTo.bind(this) as EventListener);
   }
 
-  private onStartMovement(): (event: MouseEvent) => void {
-    return (event: MouseEvent): void => {
-      this.state = State.Moving;
-      this.initialX = event.clientX;
-      this.initialY = event.clientY;
-    }
+  private onStartMovement(event: MouseEvent): void {
+    this.state = State.Moving;
+    this.initialX = event.clientX;
+    this.initialY = event.clientY;
   }
 
-  private onMove(): (event: MouseEvent) => void {
-    return (event: MouseEvent): void => {
-      if (this.state !== State.Moving) return;
+  private onMove(event: MouseEvent): void {
+    if (this.state !== State.Moving) return;
 
-      const newX = event.clientX;
-      const newY = event.clientY;
+    const newX = event.clientX;
+    const newY = event.clientY;
 
-      this.style.top = `${this.offsetTop - (this.initialY - newY)}px`;
-      this.style.left = `${this.offsetLeft - (this.initialX - newX)}px`;
-      this.initialX = newX;
-      this.initialY = newY;
-    }
+    this.style.top = `${this.offsetTop - (this.initialY - newY)}px`;
+    this.style.left = `${this.offsetLeft - (this.initialX - newX)}px`;
+    this.initialX = newX;
+    this.initialY = newY;
   }
 
-  private onStopMovement(): () => void {
-    return () => {
-      if (this.state !== State.Moving) return;
+  private onStopMovement(): void {
+    if (this.state !== State.Moving) return;
 
-      this.state = State.Settling;
-
-      const domRect: DOMRect = this.getBoundingClientRect();
-      const eventInitDict: CustomEventInit<CardMovedEvent> = {
-        detail: {
-          card: this,
-          state: {
-            card: { rect: { top: domRect.top, bottom: domRect.bottom, right: domRect.right, left: domRect.left } },
-          }
+    const domRect: DOMRect = this.getBoundingClientRect();
+    const eventInitDict: CustomEventInit<CardMovedEvent> = {
+      detail: {
+        card: this,
+        state: {
+          card: { rect: { top: domRect.top, bottom: domRect.bottom, right: domRect.right, left: domRect.left } },
         }
-      };
+      }
+    };
 
-      window.dispatchEvent(new CustomEvent<CardMovedEvent>("card:moved", eventInitDict));
+    this.state = State.Settling;
 
-      this.targetMagnetismPower = 0;
+    window.dispatchEvent(new CustomEvent<CardMovedEvent>("card:moved", eventInitDict));
 
-      if (this.state !== State.Settling) return;
+    this.targetMagnetismPower = 0;
 
-      this.state = State.Resting;
-      this.style.top = `${this.covers.getBoundingClientRect().top}px`;
-      this.style.left = `${this.covers.getBoundingClientRect().left}px`;
-    }
+    if (this.state !== State.Settling) return;
+
+    this.state = State.Resting;
+    this.style.top = `${this.covers.getBoundingClientRect().top}px`;
+    this.style.left = `${this.covers.getBoundingClientRect().left}px`;
   }
 
-  private onMagnetizeTo(): (event: CustomEvent<CardMagnetizeToEvent>) => void {
-    return (event: CustomEvent<CardMagnetizeToEvent>) => {
-      if (this.state !== State.Settling && this.state !== State.Resting) return;
-      if (this.number !== event.detail.card.number) return;
-      if (this.family !== event.detail.card.family) return;
+  private onMagnetizeTo(event: CustomEvent<CardMagnetizeToEvent>): void {
+    if (this.state !== State.Settling && this.state !== State.Resting) return;
+    if (this.number !== event.detail.card.number) return;
+    if (this.family !== event.detail.card.family) return;
 
-      const targetMagnetismPower: number = rectArea(getIntersectionRect(
-        event.detail.state.card.rect,
-        event.detail.state.target.rect
-      ));
+    const targetMagnetismPower: number = rectArea(getIntersectionRect(
+      event.detail.state.card.rect,
+      event.detail.state.target.rect
+    ));
 
-      console.log("prev magnetism power", this.targetMagnetismPower, "current magnetism power", targetMagnetismPower, event.detail.target)
+    if (this.targetMagnetismPower > targetMagnetismPower) return;
 
-      if (this.targetMagnetismPower > targetMagnetismPower) return;
+    const covers: GameSlot | GameCard = event.detail.target;
 
-      const covers: GameSlot | GameCard = event.detail.target;
+    this.state = State.Resting;
+    this.targetMagnetismPower = targetMagnetismPower;
+    this.style.top = `${covers.getBoundingClientRect().top}px`;
+    this.style.left = `${covers.getBoundingClientRect().left}px`;
 
-      this.state = State.Resting;
-      this.targetMagnetismPower = targetMagnetismPower;
-      this.style.top = `${covers.getBoundingClientRect().top}px`;
-      this.style.left = `${covers.getBoundingClientRect().left}px`;
+    // uncover previous this.covers
+    window.dispatchEvent(new CustomEvent<StackableEvent>(
+      "stackable:pop",
+      { detail: { stackable: this.covers, caller: this } }
+    ));
 
-      // uncover previous this.covers
-      window.dispatchEvent(new CustomEvent<StackableEvent>(
-        "stackable:pop",
-        { detail: { stackable: this.covers, caller: this } }
-      ));
+    // cover new this.covers
+    window.dispatchEvent(new CustomEvent<StackableEvent>(
+      "stackable:push",
+      { detail: { stackable: covers, caller: this } }
+    ));
 
-      // cover new this.covers
-      window.dispatchEvent(new CustomEvent<StackableEvent>(
-        "stackable:push",
-        { detail: { stackable: covers, caller: this } }
-      ));
-
-      this.covers = covers;
-    }
+    this.covers = covers;
   }
 }
 
