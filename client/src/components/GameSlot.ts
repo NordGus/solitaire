@@ -26,10 +26,18 @@ export default class GameSlot extends HTMLElement {
     return (event: CustomEvent<CardMovedEvent>) => {
       if (this.coveredBy !== null) return;
 
-      const card: GameCard = event.detail.card
-      const eventInitDict: CustomEventInit<CardMagnetizeToEvent> = { detail: { target: this, card: card } }
+      const eventInitDict: CustomEventInit<CardMagnetizeToEvent> = {
+        detail: {
+          target: this,
+          card: event.detail.card,
+          state: {
+            card: { rect: event.detail.state.card.rect },
+            target: { rect: this.getBoundingClientRect() }
+          }
+        }
+      }
 
-      if (collides(card.getBoundingClientRect(), this.getBoundingClientRect())) {
+      if (collides(event.detail.state.card.rect, this.getBoundingClientRect())) {
         window.dispatchEvent(new CustomEvent<CardMagnetizeToEvent>("card:magnetize:to", eventInitDict))
       }
     }

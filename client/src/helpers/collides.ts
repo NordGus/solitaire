@@ -1,9 +1,9 @@
 export default function collides(body: DOMRect, collider: DOMRect): boolean {
   const bodyPoints = [
-    { x: body.right, y: body.top }, // top right
-    { x: body.left, y: body.top }, // top left
+    { x: body.right, y: body.top },    // top right
+    { x: body.left, y: body.top },     // top left
     { x: body.right, y: body.bottom }, // bottom right
-    { x: body.left, y: body.bottom }, // bottom left
+    { x: body.left, y: body.bottom },  // bottom left
   ]
 
   return bodyPoints

@@ -102,7 +102,17 @@ export default class GameCard extends HTMLElement {
       if (this.state !== State.Moving) return;
 
       this.state = State.Settling;
-      window.dispatchEvent(new CustomEvent<CardMovedEvent>("card:moved", { detail: { card: this } }))
+      window.dispatchEvent(new CustomEvent<CardMovedEvent>(
+        "card:moved",
+        {
+          detail: {
+            card: this,
+            state: {
+              card: { rect: this.getBoundingClientRect() }
+            }
+          }
+        })
+      )
     }
   }
 
@@ -115,6 +125,7 @@ export default class GameCard extends HTMLElement {
       this.state = State.Resting
 
       const covers: GameSlot | GameCard = event.detail.target
+
 
       this.style.top = `${covers.getBoundingClientRect().top}px`
       this.style.left = `${covers.getBoundingClientRect().left}px`
