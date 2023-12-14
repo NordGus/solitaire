@@ -1,13 +1,19 @@
 {{ define "card" }}
     <game-card
             class="grid grid-cols-1 grid-rows-card absolute w-[9rem] h-[14rem] p-2 bg-amber-100 rounded cursor-move"
-            number="{{ .Number }}"
-            family="{{ .Family }}"
-            slot="{{ .Slot }}"
+            data-number="{{ .Card.Number }}"
+            data-family="{{ .Card.Family }}"
+        {{ if .IsAttachToSlot }}
+            data-slot="{{ .Slot }}"
+        {{ end }}
+        {{ if .IsAttachToCard }}
+            data-attach-number="{{ .AttachToCard.Number }}"
+            data-attach-family="{{ .AttachToCard.Family }}"
+        {{ end }}
     >
         <div class="flex justify-start items-center mb-2 gap-1 font-bold z-1">
-            <span>{{ parseCardNumber .Number .Family }}</span>
-            <span>{{ .Family }}</span>
+            <span>{{ parseCardNumber .Card.Number .Card.Family }}</span>
+            <span>{{ .Card.Family }}</span>
         </div>
         <span class="w-full h-full"></span>
     </game-card>
