@@ -15,17 +15,17 @@ export default class GameSlot extends HTMLElement {
   }
 
   connectedCallback(): void {
-    window.addEventListener("card:moved", this.onCardMoved.bind(this) as EventListener);
-    window.addEventListener("stackable:push", this.onPush.bind(this) as EventListener);
-    window.addEventListener("stackable:pop", this.onPop.bind(this) as EventListener);
+    document.addEventListener("card:moved", this.onCardMoved.bind(this) as EventListener);
+    document.addEventListener("stackable:push", this.onPush.bind(this) as EventListener);
+    document.addEventListener("stackable:pop", this.onPop.bind(this) as EventListener);
 
     this.dispatchEvent(new Event("game:element:connected", { bubbles: true }));
   }
 
   disconnectedCallback(): void {
-    window.removeEventListener("card:moved", this.onCardMoved.bind(this) as EventListener);
-    window.removeEventListener("stackable:push", this.onPush.bind(this) as EventListener);
-    window.removeEventListener("stackable:pop", this.onPop.bind(this) as EventListener);
+    document.removeEventListener("card:moved", this.onCardMoved.bind(this) as EventListener);
+    document.removeEventListener("stackable:push", this.onPush.bind(this) as EventListener);
+    document.removeEventListener("stackable:pop", this.onPop.bind(this) as EventListener);
   }
 
   private onCardMoved(event: CustomEvent<CardMovedEvent>): void {
@@ -44,7 +44,7 @@ export default class GameSlot extends HTMLElement {
     };
 
     if (collides(event.detail.state.card.rect, eventInitDict.detail!.state.target.rect)) {
-      window.dispatchEvent(new CustomEvent<CardMagnetizeToEvent>("card:magnetize:to", eventInitDict));
+      document.dispatchEvent(new CustomEvent<CardMagnetizeToEvent>("card:magnetize:to", eventInitDict));
     }
   }
 
