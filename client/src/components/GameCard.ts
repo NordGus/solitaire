@@ -196,8 +196,6 @@ export default class GameCard extends HTMLElement {
 
     this.state = State.Resting;
 
-    console.log(this.covers);
-
     if (this.covers instanceof GameSlot) {
       this.style.top = `${this.covers.getBoundingClientRect().top}px`;
       this.style.left = `${this.covers.getBoundingClientRect().left}px`;
