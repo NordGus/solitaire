@@ -26,6 +26,8 @@ enum State {
   Settling = "settling"
 }
 
+const TOP_OFFSET: number = 35;
+
 export default class GameCard extends HTMLElement {
   private initialX: number
   private initialY: number
@@ -169,7 +171,7 @@ export default class GameCard extends HTMLElement {
       this.style.top = `${covers.getBoundingClientRect().top}px`;
       this.style.left = `${covers.getBoundingClientRect().left}px`;
     } else {
-      this.style.top = `${covers.getBoundingClientRect().top + 35}px`;
+      this.style.top = `${covers.getBoundingClientRect().top + TOP_OFFSET}px`;
       this.style.left = `${covers.getBoundingClientRect().left}px`;
     }
 
@@ -200,7 +202,7 @@ export default class GameCard extends HTMLElement {
       this.style.top = `${this.covers.getBoundingClientRect().top}px`;
       this.style.left = `${this.covers.getBoundingClientRect().left}px`;
     } else {
-      this.style.top = `${this.covers.getBoundingClientRect().top + 35}px`;
+      this.style.top = `${this.covers.getBoundingClientRect().top + TOP_OFFSET}px`;
       this.style.left = `${this.covers.getBoundingClientRect().left}px`;
     }
 
