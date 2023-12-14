@@ -32,7 +32,7 @@ export default class GameCard extends HTMLElement {
   private targetMagnetismPower: number
 
   private covers: GameCard | GameSlot
-  // private coveredBy: GameCard | null
+  private coveredBy: GameCard | null
 
   private state: State
   private readonly layer: number
@@ -48,7 +48,7 @@ export default class GameCard extends HTMLElement {
     this.targetMagnetismPower = 0;
 
     this.covers = this;
-    // this.coveredBy = null;
+    this.coveredBy = null;
 
     this.state = State.Loaded;
     this.layer = parseInt(this.dataset.layer!);
@@ -62,6 +62,9 @@ export default class GameCard extends HTMLElement {
     this.addEventListener("mousemove", this.onMove.bind(this));
     this.addEventListener("mouseup", this.onStopMovement.bind(this));
     this.addEventListener("mouseleave", this.onStopMovement.bind(this));
+
+    document.addEventListener("stackable:push", this.onPush.bind(this) as EventListener);
+    document.addEventListener("stackable:pop", this.onPop.bind(this) as EventListener);
 
     document.addEventListener("game:elements:attach:layer", this.onAttachLayer.bind(this) as EventListener);
 
@@ -92,6 +95,9 @@ export default class GameCard extends HTMLElement {
     this.removeEventListener("mousemove", this.onMove.bind(this));
     this.removeEventListener("mouseup", this.onStopMovement.bind(this));
     this.removeEventListener("mouseleave", this.onStopMovement.bind(this));
+
+    document.removeEventListener("stackable:push", this.onPush.bind(this) as EventListener);
+    document.removeEventListener("stackable:pop", this.onPop.bind(this) as EventListener);
 
     document.removeEventListener("game:elements:attach:layer", this.onAttachLayer.bind(this) as EventListener);
 
@@ -196,6 +202,21 @@ export default class GameCard extends HTMLElement {
       "stackable:push",
       { bubbles: true, detail: { stackable: this.covers, caller: this } }
     ));
+  }
+
+  private onPush(event: CustomEvent<StackableEvent>): void {
+    if (event.detail.stackable !== this) return;
+    if (this.coveredBy !== null) return;
+
+    this.coveredBy = event.detail.caller;
+  }
+
+  private onPop(event: CustomEvent<StackableEvent>): void {
+    if (event.detail.stackable !== this) return;
+    if (this.coveredBy === null) return;
+    if (event.detail.caller !== this.coveredBy) return;
+
+    this.coveredBy = null;
   }
 }
 
