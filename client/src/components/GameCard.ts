@@ -1,6 +1,6 @@
 import getIntersectionRect from "@/helpers/getIntersectionRect.ts";
 import rectArea from "@/helpers/rectArea.ts";
-import { CardFamily, CardMagnetizeToEvent, CardMovedEvent, CardNumber, SlotNumber, StackableEvent } from "@/types.ts";
+import { CardFamily, CardMagnetizeToEvent, CardMovedEvent, CardNumber, StackableEvent } from "@/types.ts";
 import GameSlot from "@Components/GameSlot.ts";
 
 function getCardFamilyColorClass(family: CardFamily): string {
@@ -44,8 +44,8 @@ export default class GameCard extends HTMLElement {
 
     this.state = State.Loaded;
 
-    this.number = parseInt(this.attributes.getNamedItem("number")!.value) as CardNumber;
-    this.family = this.attributes.getNamedItem("family")!.value as CardFamily;
+    this.number = parseInt(this.dataset.number!) as CardNumber;
+    this.family = this.dataset.family! as CardFamily;
   }
 
   connectedCallback(): void {
@@ -60,9 +60,19 @@ export default class GameCard extends HTMLElement {
 
     this.classList.toggle(getCardFamilyColorClass(this.family), true);
 
-    if (this.attributes.getNamedItem("slot")) {
-      const slotNumber = parseInt(this.attributes.getNamedItem("slot")!.value) as SlotNumber;
-      this.covers = document.querySelector<GameSlot>(`#play-area game-slot[number='${slotNumber}']`)!;
+    if (this.dataset.slot) {
+      const slot = this.dataset.slot;
+
+      this.covers = document.querySelector<GameSlot>(`#play-area game-slot[data-number='${slot}']`)!;
+    }
+
+    if (this.dataset.attachNumber && this.dataset.attachFamily) {
+      const number = this.dataset.attachNumber;
+      const family = this.dataset.attachFamily;
+
+      this.covers = document.querySelector<GameCard>(
+        `game-card[data-number='${number}'][data-family='${family}']`
+      )!;
     }
 
     this.dispatchEvent(new Event("game:element:connected", { bubbles: true }));
