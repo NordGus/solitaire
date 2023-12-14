@@ -10,7 +10,7 @@ export default class GameSlot extends HTMLElement {
   constructor() {
     super();
 
-    this.number = parseInt(this.attributes.getNamedItem("number")!.value) as SlotNumber;
+    this.number = parseInt(this.dataset.number!) as SlotNumber
     this.coveredBy = null;
   }
 

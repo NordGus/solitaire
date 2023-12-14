@@ -1,3 +1,6 @@
 {{ define "slot" }}
-    <game-slot class="w-[9rem] h-[14rem] rounded border-[0.25rem] border-amber-600" number="{{ .Number }}"></game-slot>
+    <game-slot
+            class="w-[9rem] h-[14rem] rounded border-[0.25rem] border-amber-600"
+            data-number="{{ .Number }}"
+    ></game-slot>
 {{ end }}
