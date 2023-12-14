@@ -164,8 +164,14 @@ export default class GameCard extends HTMLElement {
 
     this.state = State.Resting;
     this.targetMagnetismPower = targetMagnetismPower;
-    this.style.top = `${covers.getBoundingClientRect().top}px`;
-    this.style.left = `${covers.getBoundingClientRect().left}px`;
+
+    if (covers instanceof GameSlot) {
+      this.style.top = `${covers.getBoundingClientRect().top}px`;
+      this.style.left = `${covers.getBoundingClientRect().left}px`;
+    } else {
+      this.style.top = `${covers.getBoundingClientRect().top + 35}px`;
+      this.style.left = `${covers.getBoundingClientRect().left}px`;
+    }
 
     // uncover previous this.covers
     document.dispatchEvent(new CustomEvent<StackableEvent>(
