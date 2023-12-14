@@ -11,7 +11,7 @@ GameBoard:
 */
 export default class GameBoard extends HTMLElement {
   // private readonly loadableElementsAmount: number = (4*13) + 22 + 11 + 4 + 2 + 1;
-  private readonly loadableElementsAmount: number = 21;
+  private readonly loadableElementsAmount: number = (4*12) + 22 + 11;
   private loadableElementsCount: number;
   private gameStarted: boolean;
 
