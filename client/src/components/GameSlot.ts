@@ -18,6 +18,8 @@ export default class GameSlot extends HTMLElement {
     window.addEventListener("card:moved", this.onCardMoved.bind(this) as EventListener);
     window.addEventListener("stackable:push", this.onPush.bind(this) as EventListener);
     window.addEventListener("stackable:pop", this.onPop.bind(this) as EventListener);
+
+    this.dispatchEvent(new Event("game:element:connected", { bubbles: true }));
   }
 
   disconnectedCallback(): void {

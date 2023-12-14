@@ -13,6 +13,7 @@ function getCardFamilyColorClass(family: CardFamily): string {
 }
 
 enum State {
+  Loaded = "loaded",
   Resting = "resting",
   Moving = "moving",
   Settling = "settling"
@@ -41,7 +42,7 @@ export default class GameCard extends HTMLElement {
     this.covers = this;
     // this.coveredBy = null;
 
-    this.state = State.Resting;
+    this.state = State.Loaded;
 
     this.number = parseInt(this.attributes.getNamedItem("number")!.value) as CardNumber;
     this.family = this.attributes.getNamedItem("family")!.value as CardFamily;
@@ -53,15 +54,18 @@ export default class GameCard extends HTMLElement {
     this.addEventListener("mouseup", this.onStopMovement.bind(this));
     this.addEventListener("mouseleave", this.onStopMovement.bind(this));
 
+    document.addEventListener("game:elements:cards:attach:slots", this.onAttachToSlot.bind(this))
+
     window.addEventListener("card:magnetize:to", this.onMagnetizeTo.bind(this) as EventListener);
 
     this.classList.toggle(getCardFamilyColorClass(this.family), true);
 
-    // TODO: implement a event listener to attach this.covers and align to it
     if (this.attributes.getNamedItem("slot")) {
       const slotNumber = parseInt(this.attributes.getNamedItem("slot")!.value) as SlotNumber;
       this.covers = document.querySelector<GameSlot>(`#play-area game-slot[number='${slotNumber}']`)!;
     }
+
+    this.dispatchEvent(new Event("game:element:connected", { bubbles: true }));
   }
 
   disconnectedCallback(): void {
@@ -71,6 +75,8 @@ export default class GameCard extends HTMLElement {
     this.removeEventListener("mouseleave", this.onStopMovement.bind(this));
 
     window.removeEventListener("card:magnetize:to", this.onMagnetizeTo.bind(this) as EventListener);
+
+    document.removeEventListener("game:elements:cards:attach:slots", this.onAttachToSlot.bind(this));
   }
 
   private onStartMovement(event: MouseEvent): void {
@@ -149,6 +155,20 @@ export default class GameCard extends HTMLElement {
     ));
 
     this.covers = covers;
+  }
+
+  private onAttachToSlot(): void {
+    if (this.state !== State.Loaded) return;
+    if (!(this.covers instanceof GameSlot)) return;
+
+    this.state = State.Resting;
+    this.style.top = `${this.covers.getBoundingClientRect().top}px`;
+    this.style.left = `${this.covers.getBoundingClientRect().left}px`;
+
+    window.dispatchEvent(new CustomEvent<StackableEvent>(
+      "stackable:push",
+      { detail: { stackable: this.covers, caller: this } }
+    ));
   }
 }
 
