@@ -9,7 +9,6 @@ function getCardFamilyColorClass(family: CardFamily): string {
   if (family === "golds") return "text-yellow-400";
   if (family === "cups") return "text-red-400";
   if (family === "arcana") return "text-amber-600";
-
   return "";
 }
 
@@ -58,14 +57,11 @@ export default class GameCard extends HTMLElement {
 
     this.classList.toggle(getCardFamilyColorClass(this.family), true);
 
-    // TODO: implement a event listener to attach this.covers
-    if (this.attributes.getNamedItem("slot")!.value) {
+    // TODO: implement a event listener to attach this.covers and align to it
+    if (this.attributes.getNamedItem("slot")) {
       const slotNumber = parseInt(this.attributes.getNamedItem("slot")!.value) as SlotNumber;
       this.covers = document.querySelector<GameSlot>(`#play-area game-slot[number='${slotNumber}']`)!;
     }
-
-    this.style.top = `${this.covers.getBoundingClientRect().top}px`;
-    this.style.left = `${this.covers.getBoundingClientRect().left}px`;
   }
 
   disconnectedCallback(): void {
