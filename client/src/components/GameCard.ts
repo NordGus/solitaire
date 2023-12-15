@@ -12,10 +12,10 @@ import {
 import GameSlot from "@Components/GameSlot.ts";
 
 function getCardFamilyColorClass(family: CardFamily): string {
-  if (family === "swords") return "text-blue-400";
-  if (family === "clubs") return "text-green-400";
+  if (family === "swords") return "text-blue-700";
+  if (family === "clubs") return "text-green-600";
   if (family === "golds") return "text-yellow-600";
-  if (family === "cups") return "text-red-400";
+  if (family === "cups") return "text-red-700";
   if (family === "arcana") return "text-amber-500";
   return "";
 }
