@@ -1,21 +1,30 @@
 {{ define "card" }}
     <game-card
-            class="grid grid-cols-1 grid-rows-card absolute w-[9rem] h-[15rem] p-1 bg-amber-100 rounded cursor-move border-amber-800 border-[2px]"
+        {{ if eq .Card.Family "arcana" }}
+            class="grid grid-cols-1 grid-rows-card absolute w-[9rem] h-[15rem] bg-gray-800 rounded cursor-move border-amber-500 border-[2px] shadow"
+        {{ else }}
+            class="grid grid-cols-1 grid-rows-card absolute w-[9rem] h-[15rem] p-1 bg-amber-100 rounded cursor-move border-amber-800 border-[2px] shadow"
+        {{ end }}
             data-number="{{ .Card.Number }}"
             data-family="{{ .Card.Family }}"
             data-layer="{{ .Layer }}"
         {{ if .IsAttachToSlot }}
             data-slot="{{ .Slot }}"
-        {{ end }}
-        {{ if .IsAttachToCard }}
+        {{ else if .IsAttachToCard }}
             data-attach-number="{{ .AttachToCard.Number }}"
             data-attach-family="{{ .AttachToCard.Family }}"
         {{ end }}
     >
+    {{ if eq .Card.Family "arcana" }}
+        <span class="block py-1 mb-2 border-b-[3px] border-amber-500 text-center font-black">
+            {{ parseCardNumber .Card.Number .Card.Family }}
+        </span>
+    {{ else }}
         <div class="flex justify-start items-center mb-2 gap-1 font-bold">
             <span>{{ parseCardNumber .Card.Number .Card.Family }}</span>
             <span>{{ .Card.Family }}</span>
         </div>
+    {{ end }}
         <span class="w-full h-full"></span>
     </game-card>
 {{ end }}
