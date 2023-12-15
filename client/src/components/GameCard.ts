@@ -1,3 +1,4 @@
+import collides from "@/helpers/collides.ts";
 import getIntersectionRect from "@/helpers/getIntersectionRect.ts";
 import rectArea from "@/helpers/rectArea.ts";
 import {
@@ -65,6 +66,7 @@ export default class GameCard extends HTMLElement {
     this.addEventListener("mouseup", this.onStopMovement.bind(this));
     this.addEventListener("mouseleave", this.onStopMovement.bind(this));
 
+    document.addEventListener("card:moved", this.onCardMoved.bind(this) as EventListener);
     document.addEventListener("stackable:push", this.onPush.bind(this) as EventListener);
     document.addEventListener("stackable:pop", this.onPop.bind(this) as EventListener);
 
@@ -98,6 +100,7 @@ export default class GameCard extends HTMLElement {
     this.removeEventListener("mouseup", this.onStopMovement.bind(this));
     this.removeEventListener("mouseleave", this.onStopMovement.bind(this));
 
+    document.removeEventListener("card:moved", this.onCardMoved.bind(this) as EventListener);
     document.removeEventListener("stackable:push", this.onPush.bind(this) as EventListener);
     document.removeEventListener("stackable:pop", this.onPop.bind(this) as EventListener);
 
@@ -107,6 +110,8 @@ export default class GameCard extends HTMLElement {
   }
 
   private onStartMovement(event: MouseEvent): void {
+    if (this.coveredBy !== null) return;
+
     this.state = State.Moving;
     this.initialX = event.clientX;
     this.initialY = event.clientY;
@@ -223,6 +228,28 @@ export default class GameCard extends HTMLElement {
     if (event.detail.caller !== this.coveredBy) return;
 
     this.coveredBy = null;
+  }
+
+  private onCardMoved(event: CustomEvent<CardMovedEvent>): void {
+    if (this.coveredBy !== null) return;
+    if (this.state !== State.Resting) return;
+    if (this.number === event.detail.card.number && this.family === event.detail.card.family) return;
+
+    const domRect: DOMRect = this.getBoundingClientRect();
+    const eventInitDict: CustomEventInit<CardMagnetizeToEvent> = {
+      detail: {
+        target: this,
+        card: event.detail.card,
+        state: {
+          card: { rect: event.detail.state.card.rect },
+          target: { rect: { top: domRect.top, bottom: domRect.bottom, left: domRect.left, right: domRect.right } }
+        }
+      }
+    };
+
+    if (collides(event.detail.state.card.rect, eventInitDict.detail!.state.target.rect)) {
+      document.dispatchEvent(new CustomEvent<CardMagnetizeToEvent>("card:magnetize:to", eventInitDict));
+    }
   }
 }
 
