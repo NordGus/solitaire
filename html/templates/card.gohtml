@@ -19,6 +19,8 @@
         {{ else if .IsAttachToCard }}
             data-attach-number="{{ .AttachToCard.Number }}"
             data-attach-family="{{ .AttachToCard.Family }}"
+        {{ else if .IsResting }}
+            data-is-resting="true"
         {{ end }}
     >
     {{ if eq .Card.Family "arcana" }}

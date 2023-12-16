@@ -9,6 +9,7 @@ import {
   CardNumber,
   StackableEvent
 } from "@/types.ts";
+import FamilyRestingSlot from "@Components/FamilyRestingSlot.ts";
 import GameSlot from "@Components/GameSlot.ts";
 
 function getCardFamilyColorClass(family: CardFamily): string {
@@ -22,9 +23,10 @@ function getCardFamilyColorClass(family: CardFamily): string {
 
 enum State {
   Loaded = "loaded",
-  Resting = "resting",
+  InPlay = "in-play",
   Moving = "moving",
-  Settling = "settling"
+  Settling = "settling",
+  Resting = "resting"
 }
 
 const TOP_OFFSET: number = 28;
@@ -34,7 +36,7 @@ export default class GameCard extends HTMLElement {
   private initialY: number
   private targetMagnetismPower: number
 
-  private covers: GameCard | GameSlot
+  private covers: GameCard | GameSlot | FamilyRestingSlot
   private coveredBy: GameCard | null
 
   private state: State
@@ -91,6 +93,10 @@ export default class GameCard extends HTMLElement {
       )!;
     }
 
+    if (this.dataset.isResting) {
+      this.covers = document.querySelector<FamilyRestingSlot>(`family-resting-slot[data-family='${this.family}']`)!;
+    }
+
     this.dispatchEvent(new Event("game:element:connected", { bubbles: true }));
   }
 
@@ -110,6 +116,7 @@ export default class GameCard extends HTMLElement {
   }
 
   private onStartMovement(event: MouseEvent): void {
+    if (this.state === State.Resting) return;
     if (this.coveredBy !== null) return;
 
     this.state = State.Moving;
@@ -118,6 +125,7 @@ export default class GameCard extends HTMLElement {
   }
 
   private onMove(event: MouseEvent): void {
+    if (this.state === State.Resting) return;
     if (this.state !== State.Moving) return;
 
     const newX = event.clientX;
@@ -130,6 +138,7 @@ export default class GameCard extends HTMLElement {
   }
 
   private onStopMovement(): void {
+    if (this.state === State.Resting) return;
     if (this.state !== State.Moving) return;
 
     const domRect: DOMRect = this.getBoundingClientRect();
@@ -150,9 +159,9 @@ export default class GameCard extends HTMLElement {
 
     if (this.state !== State.Settling) return;
 
-    this.state = State.Resting;
+    this.state = State.InPlay;
 
-    if (this.covers instanceof GameSlot) {
+    if (this.covers instanceof GameSlot || this.covers instanceof FamilyRestingSlot) {
       this.style.top = `${this.covers.getBoundingClientRect().top}px`;
       this.style.left = `${this.covers.getBoundingClientRect().left}px`;
     } else {
@@ -162,7 +171,8 @@ export default class GameCard extends HTMLElement {
   }
 
   private onMagnetizeTo(event: CustomEvent<CardMagnetizeToEvent>): void {
-    if (this.state !== State.Settling && this.state !== State.Resting) return;
+    if (this.state === State.Resting) return;
+    if (this.state !== State.Settling && this.state !== State.InPlay) return;
     if (this.number !== event.detail.card.number) return;
     if (this.family !== event.detail.card.family) return;
 
@@ -175,10 +185,10 @@ export default class GameCard extends HTMLElement {
 
     const covers: GameSlot | GameCard = event.detail.target;
 
-    this.state = State.Resting;
+    this.state = State.InPlay;
     this.targetMagnetismPower = targetMagnetismPower;
 
-    if (covers instanceof GameSlot) {
+    if (this.covers instanceof GameSlot || this.covers instanceof FamilyRestingSlot) {
       this.style.top = `${covers.getBoundingClientRect().top}px`;
       this.style.left = `${covers.getBoundingClientRect().left}px`;
     } else {
@@ -205,9 +215,14 @@ export default class GameCard extends HTMLElement {
     if (this.state !== State.Loaded) return;
     if (this.layer !== event.detail.layer) return;
 
-    this.state = State.Resting;
+    if (this.covers instanceof FamilyRestingSlot) {
+      this.state = State.Resting;
+      this.classList.toggle("cursor-move", false);
+    } else {
+      this.state = State.InPlay;
+    }
 
-    if (this.covers instanceof GameSlot) {
+    if (this.covers instanceof GameSlot || this.covers instanceof FamilyRestingSlot) {
       this.style.top = `${this.covers.getBoundingClientRect().top}px`;
       this.style.left = `${this.covers.getBoundingClientRect().left}px`;
     } else {
@@ -238,7 +253,7 @@ export default class GameCard extends HTMLElement {
 
   private onCardMoved(event: CustomEvent<CardMovedEvent>): void {
     if (this.coveredBy !== null) return;
-    if (this.state !== State.Resting) return;
+    if (this.state !== State.InPlay) return;
     if (this.number === event.detail.card.number && this.family === event.detail.card.family) return;
 
     const domRect: DOMRect = this.getBoundingClientRect();

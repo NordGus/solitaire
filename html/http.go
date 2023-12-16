@@ -21,6 +21,8 @@ type CardData struct {
 	IsAttachToCard bool
 	AttachToCard   cards.Card
 
+	IsResting bool
+
 	Layer uint8
 }
 
@@ -126,6 +128,11 @@ func (a *App) Routes(router chi.Router) {
 				{Card: cards.Golds[6], IsAttachToCard: true, AttachToCard: cards.Arcana[2], Layer: 7},
 				{Card: cards.Cups[11], IsAttachToCard: true, AttachToCard: cards.Arcana[17], Layer: 7},
 				{Card: cards.Cups[7], IsAttachToCard: true, AttachToCard: cards.Swords[5], Layer: 7},
+				// Layer 8
+				{Card: cards.Cups[1], IsResting: true, Layer: 8},
+				{Card: cards.Golds[1], IsResting: true, Layer: 8},
+				{Card: cards.Clubs[1], IsResting: true, Layer: 8},
+				{Card: cards.Swords[1], IsResting: true, Layer: 8},
 			},
 		}
 

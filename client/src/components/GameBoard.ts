@@ -12,8 +12,7 @@ GameBoard:
 import { AttachLayerEvent } from "@/types.ts";
 
 export default class GameBoard extends HTMLElement {
-  // private readonly loadableElementsAmount: number = (4*13) + 22 + 11 + 4 + 2 + 1;
-  private readonly loadableElementsAmount: number = (4*12) + 22 + 11 + 4;
+  private readonly loadableElementsAmount: number = (4*13) + 22 + 11 + 4;
   private loadableElementsCount: number;
   private gameStarted: boolean;
 
@@ -41,7 +40,7 @@ export default class GameBoard extends HTMLElement {
 
     this.gameStarted = true;
 
-    for (let i = 0; i < 7; i++) {
+    for (let i = 0; i < 8; i++) {
       this.dispatchEvent(new CustomEvent<AttachLayerEvent>(
         "game:elements:attach:layer", { bubbles: true, detail: { layer: i+1 } }
       ));
