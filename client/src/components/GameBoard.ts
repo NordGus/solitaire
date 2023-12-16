@@ -13,7 +13,7 @@ import { AttachLayerEvent } from "@/types.ts";
 
 export default class GameBoard extends HTMLElement {
   // private readonly loadableElementsAmount: number = (4*13) + 22 + 11 + 4 + 2 + 1;
-  private readonly loadableElementsAmount: number = (4*12) + 22 + 11;
+  private readonly loadableElementsAmount: number = (4*12) + 22 + 11 + 4;
   private loadableElementsCount: number;
   private gameStarted: boolean;
 

@@ -7,8 +7,9 @@ import (
 )
 
 type BoardState struct {
-	Slots []Slot
-	Cards []CardData
+	FamilyRestingSlots []FamilyRestingSlot
+	Slots              []Slot
+	Cards              []CardData
 }
 
 type CardData struct {
@@ -27,6 +28,10 @@ type Slot struct {
 	Number uint8
 }
 
+type FamilyRestingSlot struct {
+	Family string
+}
+
 func (a *App) Routes(router chi.Router) {
 	router.Get("/", func(writer http.ResponseWriter, _ *http.Request) {
 		slots := make([]Slot, 11)
@@ -36,6 +41,12 @@ func (a *App) Routes(router chi.Router) {
 		}
 
 		data := BoardState{
+			FamilyRestingSlots: []FamilyRestingSlot{
+				{Family: cards.Families["cups"]},
+				{Family: cards.Families["golds"]},
+				{Family: cards.Families["clubs"]},
+				{Family: cards.Families["swords"]},
+			},
 			Slots: slots,
 			Cards: []CardData{
 				// Layer 1

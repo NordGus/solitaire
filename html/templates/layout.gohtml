@@ -18,10 +18,9 @@
                     </div>
                     <div class="w-[20rem]"></div>
                     <div class="flex-1 flex justify-between items-center py-[0.5rem] px-[3.5rem] rounded-tr-lg">
-                        <div class="w-[7rem] h-[12.5rem] rounded border-[2px] border-amber-600 bg-red-950">cups</div>
-                        <div class="w-[7rem] h-[12.5rem] rounded border-[2px] border-amber-600 bg-red-950">golds</div>
-                        <div class="w-[7rem] h-[12.5rem] rounded border-[2px] border-amber-600 bg-red-950">clubs</div>
-                        <div class="w-[7rem] h-[12.5rem] rounded border-[2px] border-amber-600 bg-red-950">swords</div>
+                        {{ range .FamilyRestingSlots }}
+                            {{ template "family_resting_slot" . }}
+                        {{ end }}
                     </div>
                 </div>
                 <div id="play-area" class="flex m-0 p-4 flex-1 justify-between items-start rounded-b-lg bg-red-950 shadow-inner">
