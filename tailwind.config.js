@@ -1,5 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 
+
 export default {
   content: [
     "./html/templates/**/*.gohtml",
@@ -8,7 +9,7 @@ export default {
   theme: {
     darkMode: "class",
     fontFamily: {
-      sans: ["Lato", "system-ui", "sans-serif"],
+      sans: ["Geist Light", "sans"],
     },
     extend: {
       gridTemplateRows: {
