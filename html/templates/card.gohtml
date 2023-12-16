@@ -1,15 +1,15 @@
 {{ define "card" }}
     <game-card
         {{ if eq .Card.Family "arcana" }}
-            class="grid grid-cols-1 grid-rows-card absolute w-[9.5rem] h-[18rem] p-1 bg-gray-900 rounded cursor-move border-amber-600 border-[1px] border-b-[2px] shadow"
+            class="grid grid-cols-1 grid-rows-card absolute w-[7rem] h-[12.5rem] p-1 bg-gray-900 rounded cursor-move border-amber-600 border-[1px] border-b-[2px] shadow"
         {{ else if eq .Card.Family "golds" }}
-            class="grid grid-cols-1 grid-rows-card absolute w-[9.5rem] h-[18rem] p-1 bg-amber-100 rounded cursor-move border-yellow-600 border-[1px] border-b-[2px] shadow"
+            class="grid grid-cols-1 grid-rows-card absolute w-[7rem] h-[12.5rem] p-1 bg-amber-100 rounded cursor-move border-yellow-600 border-[1px] border-b-[2px] shadow"
         {{ else if eq .Card.Family "cups" }}
-            class="grid grid-cols-1 grid-rows-card absolute w-[9.5rem] h-[18rem] p-1 bg-amber-100 rounded cursor-move border-red-700 border-[1px] border-b-[2px] shadow"
+            class="grid grid-cols-1 grid-rows-card absolute w-[7rem] h-[12.5rem] p-1 bg-amber-100 rounded cursor-move border-red-700 border-[1px] border-b-[2px] shadow"
         {{ else if eq .Card.Family "swords" }}
-            class="grid grid-cols-1 grid-rows-card absolute w-[9.5rem] h-[18rem] p-1 bg-amber-100 rounded cursor-move border-blue-700 border-[1px] border-b-[2px] shadow"
+            class="grid grid-cols-1 grid-rows-card absolute w-[7rem] h-[12.5rem] p-1 bg-amber-100 rounded cursor-move border-blue-700 border-[1px] border-b-[2px] shadow"
         {{ else if eq .Card.Family "clubs" }}
-            class="grid grid-cols-1 grid-rows-card absolute w-[9.5rem] h-[18rem] p-1 bg-amber-100 rounded cursor-move border-green-600 border-[1px] border-b-[2px] shadow"
+            class="grid grid-cols-1 grid-rows-card absolute w-[7rem] h-[12.5rem] p-1 bg-amber-100 rounded cursor-move border-green-600 border-[1px] border-b-[2px] shadow"
         {{ end }}
             data-number="{{ .Card.Number }}"
             data-family="{{ .Card.Family }}"
@@ -22,11 +22,11 @@
         {{ end }}
     >
     {{ if eq .Card.Family "arcana" }}
-        <span class="block text-center text-2xl font-black leading-none">
+        <span class="block text-center text-xl font-black leading-none">
             {{ parseCardNumber .Card.Number .Card.Family }}
         </span>
     {{ else }}
-        <div class="flex justify-start items-center gap-1 text-2xl font-medium leading-none">
+        <div class="flex justify-start items-center gap-1 text-xl font-medium leading-none">
             <span>{{ parseCardNumber .Card.Number .Card.Family }}</span>
             <span>{{ .Card.Family }}</span>
         </div>

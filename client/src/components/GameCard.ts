@@ -27,7 +27,7 @@ enum State {
   Settling = "settling"
 }
 
-const TOP_OFFSET: number = 35;
+const TOP_OFFSET: number = 28;
 
 export default class GameCard extends HTMLElement {
   private initialX: number
