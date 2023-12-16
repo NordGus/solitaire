@@ -1,3 +1,4 @@
+import FamilyRestingSlot from "@Components/FamilyRestingSlot.ts";
 import GameCard from "@Components/GameCard.ts";
 import GameSlot from "@Components/GameSlot.ts";
 
@@ -17,4 +18,4 @@ export type CardMagnetizeToEvent = {
     target: { rect: Rect }
   }
 };
-export type StackableEvent = { stackable: GameCard | GameSlot, caller: GameCard };
+export type StackableEvent = { stackable: GameCard | GameSlot | FamilyRestingSlot, caller: GameCard };
