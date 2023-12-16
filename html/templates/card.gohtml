@@ -1,15 +1,15 @@
 {{ define "card" }}
     <game-card
         {{ if eq .Card.Family "arcana" }}
-            class="grid grid-cols-1 grid-rows-card absolute w-[9.5rem] h-[18rem] p-1 bg-gray-800 rounded cursor-move border-amber-500 border-[3px] shadow"
+            class="grid grid-cols-1 grid-rows-card absolute w-[9.5rem] h-[18rem] p-1.5 bg-gray-800 rounded cursor-move border-amber-600 border-[1px] border-b-[2px]"
         {{ else if eq .Card.Family "golds" }}
-            class="grid grid-cols-1 grid-rows-card absolute w-[9.5rem] h-[18rem] p-1 bg-amber-100 rounded cursor-move border-yellow-600 border-[3px] shadow"
+            class="grid grid-cols-1 grid-rows-card absolute w-[9.5rem] h-[18rem] p-1.5 bg-amber-100 rounded cursor-move border-yellow-600 border-[1px] border-b-[2px]"
         {{ else if eq .Card.Family "cups" }}
-            class="grid grid-cols-1 grid-rows-card absolute w-[9.5rem] h-[18rem] p-1 bg-amber-100 rounded cursor-move border-red-700 border-[3px] shadow"
+            class="grid grid-cols-1 grid-rows-card absolute w-[9.5rem] h-[18rem] p-1.5 bg-amber-100 rounded cursor-move border-red-700 border-[1px] border-b-[2px]"
         {{ else if eq .Card.Family "swords" }}
-            class="grid grid-cols-1 grid-rows-card absolute w-[9.5rem] h-[18rem] p-1 bg-amber-100 rounded cursor-move border-blue-700 border-[3px] shadow"
+            class="grid grid-cols-1 grid-rows-card absolute w-[9.5rem] h-[18rem] p-1.5 bg-amber-100 rounded cursor-move border-blue-700 border-[1px] border-b-[2px]"
         {{ else if eq .Card.Family "clubs" }}
-            class="grid grid-cols-1 grid-rows-card absolute w-[9.5rem] h-[18rem] p-1 bg-amber-100 rounded cursor-move border-green-600 border-[3px] shadow"
+            class="grid grid-cols-1 grid-rows-card absolute w-[9.5rem] h-[18rem] p-1.5 bg-amber-100 rounded cursor-move border-green-600 border-[1px] border-b-[2px]"
         {{ end }}
             data-number="{{ .Card.Number }}"
             data-family="{{ .Card.Family }}"
