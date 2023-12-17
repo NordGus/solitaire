@@ -28,8 +28,9 @@ export default class MovingState extends CardState {
   }
 
   onStopMovement(): CardState {
+    const covers = this._card.covers;
     const cardRect = this._card.getBoundingClientRect();
-    const oldRect = this._card.covers.getBoundingClientRect();
+    const oldRect = covers.getBoundingClientRect();
     const settling = new SettlingState(this._card);
 
     this._card.setState(settling);
@@ -48,7 +49,7 @@ export default class MovingState extends CardState {
 
     if (this._card.state !== settling) return this._card.state;
     else { // re-magnetizes to old position.
-      this._card.style.top = `${oldRect.top + (this._card.covers instanceof Card ? Card.TOP_OFFSET : 0)}px`;
+      this._card.style.top = `${oldRect.top + (covers instanceof Card ? Card.TOP_OFFSET : 0)}px`;
       this._card.style.left = `${oldRect.left}px`;
 
       return new InPlayState(this._card);

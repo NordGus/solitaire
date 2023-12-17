@@ -15,39 +15,7 @@ export default class InPlayState extends CardState {
     this.currentMagnetism = currentMagnetism ? currentMagnetism : 0;
   }
 
-  onMagnetize(event: CustomEvent<CardMagnetizeToEvent>): CardState  {
-    if (this._card.number !== event.detail.card.number) return this;
-    if (this._card.family !== event.detail.card.family) return this;
-
-    const rect = event.detail.target.getBoundingClientRect();
-    const targetMagnetism: number = rectArea(getIntersectionRect(
-      event.detail.state.card.rect,
-      event.detail.state.target.rect
-    ));
-
-    if (this.currentMagnetism > targetMagnetism) return this;
-
-    this._card.style.top = `${rect.top + (this._card.covers instanceof Card ? Card.TOP_OFFSET : 0)}px`;
-    this._card.style.left = `${rect.left}px`;
-
-    // uncover previous this.covers
-    document.dispatchEvent(new CustomEvent<StackableEvent>(
-      "stackable:pop",
-      { detail: { stackable: this._card.covers, caller: this._card } }
-    ));
-
-    // cover new this.covers
-    document.dispatchEvent(new CustomEvent<StackableEvent>(
-      "stackable:push",
-      { detail: { stackable: event.detail.target, caller: this._card } }
-    ));
-
-    this._card.setCovers(event.detail.target);
-
-    return new InPlayState(this._card, targetMagnetism);
-  }
-
-  onStartMovement(event: MouseEvent): CardState  {
+  onStartMovement(event: MouseEvent): CardState {
     if (this._card.coveredBy !== null) return this;
 
     return new MovingState(this._card, event.clientX, event.clientY);
@@ -74,6 +42,39 @@ export default class InPlayState extends CardState {
     }
 
     return this;
+  }
+
+  onMagnetize(event: CustomEvent<CardMagnetizeToEvent>): CardState {
+    if (this._card.number !== event.detail.card.number) return this;
+    if (this._card.family !== event.detail.card.family) return this;
+
+    const rect = event.detail.target.getBoundingClientRect();
+    const covers = this._card.covers;
+    const targetMagnetism: number = rectArea(getIntersectionRect(
+      event.detail.state.card.rect,
+      event.detail.state.target.rect
+    ));
+
+    if (this.currentMagnetism > targetMagnetism) return this;
+
+    this._card.style.top = `${rect.top + (covers instanceof Card ? Card.TOP_OFFSET : 0)}px`;
+    this._card.style.left = `${rect.left}px`;
+
+    // uncover previous this.covers
+    document.dispatchEvent(new CustomEvent<StackableEvent>(
+      "stackable:pop",
+      { detail: { stackable: covers, caller: this._card } }
+    ));
+
+    // cover new this.covers
+    document.dispatchEvent(new CustomEvent<StackableEvent>(
+      "stackable:push",
+      { detail: { stackable: event.detail.target, caller: this._card } }
+    ));
+
+    this._card.setCovers(event.detail.target);
+
+    return new InPlayState(this._card, targetMagnetism);
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

@@ -20,6 +20,7 @@ function getCardFamilyColorClass(family: CardFamily): string {
   return "";
 }
 
+// TODO: check bug on card positioning
 export default class Card extends HTMLElement {
   static TOP_OFFSET: number = 28;
 
