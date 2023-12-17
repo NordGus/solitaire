@@ -41,7 +41,7 @@ func New() (*App, error) {
 		return nil, errors.Join(errors.New("html: something went wrong parsing templates"), err)
 	}
 
-	tmpls, err = tmpls.New("family_resting_slot").ParseFS(templates, "templates/family_resting_slot.gohtml")
+	tmpls, err = tmpls.New("resting_slot").ParseFS(templates, "templates/resting_slot.gohtml")
 	if err != nil {
 		return nil, errors.Join(errors.New("html: something went wrong parsing templates"), err)
 	}

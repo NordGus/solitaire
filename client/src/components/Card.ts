@@ -9,8 +9,8 @@ import {
   CardNumber,
   StackableEvent
 } from "@/types.ts";
-import FamilyRestingSlot from "@Components/FamilyRestingSlot.ts";
-import GameSlot from "@Components/GameSlot.ts";
+import RestingSlot from "@Components/RestingSlot.ts";
+import Slot from "@Components/Slot.ts";
 
 function getCardFamilyColorClass(family: CardFamily): string {
   if (family === "swords") return "text-blue-700";
@@ -31,13 +31,13 @@ enum State {
 
 const TOP_OFFSET: number = 28;
 
-export default class GameCard extends HTMLElement {
+export default class Card extends HTMLElement {
   private initialX: number
   private initialY: number
   private targetMagnetismPower: number
 
-  private covers: GameCard | GameSlot | FamilyRestingSlot
-  private coveredBy: GameCard | null
+  private covers: Card | Slot | RestingSlot
+  private coveredBy: Card | null
 
   private state: State
   private readonly layer: number
@@ -81,20 +81,20 @@ export default class GameCard extends HTMLElement {
     if (this.dataset.slot) {
       const slot = this.dataset.slot;
 
-      this.covers = document.querySelector<GameSlot>(`#play-area game-slot[data-number='${slot}']`)!;
+      this.covers = document.querySelector<Slot>(`#play-area game-slot[data-number='${slot}']`)!;
     }
 
     if (this.dataset.attachNumber && this.dataset.attachFamily) {
       const number = this.dataset.attachNumber;
       const family = this.dataset.attachFamily;
 
-      this.covers = document.querySelector<GameCard>(
+      this.covers = document.querySelector<Card>(
         `game-card[data-number='${number}'][data-family='${family}']`
       )!;
     }
 
     if (this.dataset.isResting) {
-      this.covers = document.querySelector<FamilyRestingSlot>(`family-resting-slot[data-family='${this.family}']`)!;
+      this.covers = document.querySelector<RestingSlot>(`game-resting-slot[data-family='${this.family}']`)!;
     }
 
     this.dispatchEvent(new Event("game:element:connected", { bubbles: true }));
@@ -161,7 +161,7 @@ export default class GameCard extends HTMLElement {
 
     this.state = State.InPlay;
 
-    if (this.covers instanceof GameSlot || this.covers instanceof FamilyRestingSlot) {
+    if (this.covers instanceof Slot || this.covers instanceof RestingSlot) {
       this.style.top = `${this.covers.getBoundingClientRect().top}px`;
       this.style.left = `${this.covers.getBoundingClientRect().left}px`;
     } else {
@@ -183,12 +183,12 @@ export default class GameCard extends HTMLElement {
 
     if (this.targetMagnetismPower > targetMagnetismPower) return;
 
-    const covers: GameSlot | GameCard = event.detail.target;
+    const covers: Slot | Card = event.detail.target;
 
     this.state = State.InPlay;
     this.targetMagnetismPower = targetMagnetismPower;
 
-    if (this.covers instanceof GameSlot || this.covers instanceof FamilyRestingSlot) {
+    if (this.covers instanceof Slot || this.covers instanceof RestingSlot) {
       this.style.top = `${covers.getBoundingClientRect().top}px`;
       this.style.left = `${covers.getBoundingClientRect().left}px`;
     } else {
@@ -215,14 +215,14 @@ export default class GameCard extends HTMLElement {
     if (this.state !== State.Loaded) return;
     if (this.layer !== event.detail.layer) return;
 
-    if (this.covers instanceof FamilyRestingSlot) {
+    if (this.covers instanceof RestingSlot) {
       this.state = State.Resting;
       this.classList.toggle("cursor-move", false);
     } else {
       this.state = State.InPlay;
     }
 
-    if (this.covers instanceof GameSlot || this.covers instanceof FamilyRestingSlot) {
+    if (this.covers instanceof Slot || this.covers instanceof RestingSlot) {
       this.style.top = `${this.covers.getBoundingClientRect().top}px`;
       this.style.left = `${this.covers.getBoundingClientRect().left}px`;
     } else {
@@ -274,4 +274,4 @@ export default class GameCard extends HTMLElement {
   }
 }
 
-customElements.define("game-card", GameCard);
+customElements.define("game-card", Card);

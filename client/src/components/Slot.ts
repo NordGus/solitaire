@@ -1,9 +1,9 @@
 import collides from "@/helpers/collides.ts";
 import { CardMagnetizeToEvent, CardMovedEvent, SlotNumber, StackableEvent } from "@/types.ts";
-import GameCard from "@Components/GameCard.ts";
+import Card from "@Components/Card.ts";
 
-export default class GameSlot extends HTMLElement {
-  private coveredBy: GameCard | null
+export default class Slot extends HTMLElement {
+  private coveredBy: Card | null
 
   public readonly number: SlotNumber
 
@@ -64,4 +64,4 @@ export default class GameSlot extends HTMLElement {
   }
 }
 
-customElements.define("game-slot", GameSlot)
+customElements.define("game-slot", Slot)

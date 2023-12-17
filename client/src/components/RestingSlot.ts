@@ -1,13 +1,13 @@
 import { CardFamily, CardNumber, StackableEvent } from "@/types.ts";
-import GameCard from "@Components/GameCard.ts";
+import Card from "@Components/Card.ts";
 
 enum Direction {
   Prograde = "prograde",
   Retrograde = "retrograde"
 }
 
-export default class FamilyRestingSlot extends HTMLElement {
-  private coveredBy: GameCard | null
+export default class RestingSlot extends HTMLElement {
+  private coveredBy: Card | null
 
   private readonly attachableNumber: CardNumber
   private readonly direction: Direction
@@ -50,4 +50,4 @@ export default class FamilyRestingSlot extends HTMLElement {
   }
 }
 
-customElements.define("family-resting-slot", FamilyRestingSlot)
+customElements.define("game-resting-slot", RestingSlot)

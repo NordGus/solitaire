@@ -11,7 +11,7 @@ GameBoard:
 */
 import { AttachLayerEvent } from "@/types.ts";
 
-export default class GameBoard extends HTMLElement {
+export default class Board extends HTMLElement {
   private readonly loadableElementsAmount: number = (4*13) + 22 + 11 + 4 + 2;
   private loadableElementsCount: number;
   private gameStarted: boolean;
@@ -48,4 +48,4 @@ export default class GameBoard extends HTMLElement {
   }
 }
 
-customElements.define("game-board", GameBoard);
+customElements.define("game-board", Board);

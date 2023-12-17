@@ -14,13 +14,13 @@
                 <div id="resting-area" class="flex gap-1 justify-between h-[14rem] rounded-t-lg bg-red-900">
                     <div class="flex-1 flex justify-between items-center py-[0.5rem] px-[3.5rem] rounded-tl-lg">
                         {{ range .ArcanaRestingSlots }}
-                            {{ template "family_resting_slot" . }}
+                            {{ template "resting_slot" . }}
                         {{ end }}
                     </div>
                     <div class="w-[20rem]"></div>
                     <div class="flex-1 flex justify-between items-center py-[0.5rem] px-[3.5rem] rounded-tr-lg">
                         {{ range .FamilyRestingSlots }}
-                            {{ template "family_resting_slot" . }}
+                            {{ template "resting_slot" . }}
                         {{ end }}
                     </div>
                 </div>
