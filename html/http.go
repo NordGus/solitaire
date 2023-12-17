@@ -8,6 +8,7 @@ import (
 
 type BoardState struct {
 	FamilyRestingSlots []FamilyRestingSlot
+	ArcanaRestingSlots []FamilyRestingSlot
 	Slots              []Slot
 	Cards              []CardData
 }
@@ -31,7 +32,9 @@ type Slot struct {
 }
 
 type FamilyRestingSlot struct {
-	Family string
+	Family     string
+	Attachable uint8
+	Direction  string
 }
 
 func (a *App) Routes(router chi.Router) {
@@ -43,11 +46,15 @@ func (a *App) Routes(router chi.Router) {
 		}
 
 		data := BoardState{
+			ArcanaRestingSlots: []FamilyRestingSlot{
+				{Family: cards.Families["arcana"], Attachable: 0, Direction: "prograde"},
+				{Family: cards.Families["arcana"], Attachable: 21, Direction: "retrograde"},
+			},
 			FamilyRestingSlots: []FamilyRestingSlot{
-				{Family: cards.Families["cups"]},
-				{Family: cards.Families["golds"]},
-				{Family: cards.Families["clubs"]},
-				{Family: cards.Families["swords"]},
+				{Family: cards.Families["cups"], Attachable: 1, Direction: "prograde"},
+				{Family: cards.Families["golds"], Attachable: 1, Direction: "prograde"},
+				{Family: cards.Families["clubs"], Attachable: 1, Direction: "prograde"},
+				{Family: cards.Families["swords"], Attachable: 1, Direction: "prograde"},
 			},
 			Slots: slots,
 			Cards: []CardData{

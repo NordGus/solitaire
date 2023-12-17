@@ -1,16 +1,25 @@
-import { CardFamily, StackableEvent } from "@/types.ts";
+import { CardFamily, CardNumber, StackableEvent } from "@/types.ts";
 import GameCard from "@Components/GameCard.ts";
+
+enum Direction {
+  Prograde = "prograde",
+  Retrograde = "retrograde"
+}
 
 export default class FamilyRestingSlot extends HTMLElement {
   private coveredBy: GameCard | null
 
+  private readonly attachableNumber: CardNumber
+  private readonly direction: Direction
   public readonly family: CardFamily
 
   constructor() {
     super();
 
-    this.family = this.dataset.family! as CardFamily
     this.coveredBy = null;
+    this.family = this.dataset.family! as CardFamily;
+    this.attachableNumber = parseInt(this.dataset.attachable!) as CardNumber;
+    this.direction = this.dataset.direction === "retrograde" ? Direction.Retrograde : Direction.Prograde;
   }
 
   connectedCallback(): void {
@@ -28,7 +37,7 @@ export default class FamilyRestingSlot extends HTMLElement {
     if (event.detail.stackable !== this) return;
     if (this.coveredBy !== null) return;
 
-    if (event.detail.caller.family !== this.family || event.detail.caller.number !== 1) {
+    if (event.detail.caller.family !== this.family || event.detail.caller.number !== this.attachableNumber) {
       console.error(
         "tried to push invalid family or number: family:",
         event.detail.caller.family,
