@@ -3,8 +3,6 @@ import Card from "@Components/Card.ts";
 import CardState from "@Components/card/CardState.ts";
 import InPlayState from "@Components/card/states/InPlayState.ts";
 import SettlingState from "@Components/card/states/SettlingState.ts";
-import RestingSlot from "@Components/RestingSlot.ts";
-import Slot from "@Components/Slot.ts";
 
 export default class MovingState extends CardState {
   private x: number
@@ -50,7 +48,7 @@ export default class MovingState extends CardState {
 
     if (this._card.state !== settling) return this._card.state;
     else { // re-magnetizes to old position.
-      this._card.style.top = `${oldRect.top + (this._card.covers instanceof Slot || RestingSlot ? 0 : Card.TOP_OFFSET)}px`;
+      this._card.style.top = `${oldRect.top + (this._card.covers instanceof Card ? Card.TOP_OFFSET : 0)}px`;
       this._card.style.left = `${oldRect.left}px`;
 
       return new InPlayState(this._card);

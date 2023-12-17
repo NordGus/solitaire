@@ -4,7 +4,6 @@ import { AttachLayerEvent, CardMagnetizeToEvent, CardMovedEvent, StackableEvent 
 import Card from "@Components/Card.ts";
 import CardState from "@Components/card/CardState.ts";
 import InPlayState from "@Components/card/states/InPlayState.ts";
-import Slot from "@Components/Slot.ts";
 
 export default class SettlingState extends CardState {
   private readonly currentMagnetism: number;
@@ -27,7 +26,7 @@ export default class SettlingState extends CardState {
 
     if (this.currentMagnetism > targetMagnetism) return this;
 
-    this._card.style.top = `${rect.top + (this._card.covers instanceof Slot ? 0 : Card.TOP_OFFSET)}px`;
+    this._card.style.top = `${rect.top + (this._card.covers instanceof Card ? Card.TOP_OFFSET : 0)}px`;
     this._card.style.left = `${rect.left}px`;
 
     // uncover previous this.covers
