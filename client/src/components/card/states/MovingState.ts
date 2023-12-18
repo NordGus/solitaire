@@ -2,7 +2,6 @@ import { AttachLayerEvent, CardMagnetizeToEvent, CardMovedEvent } from "@/types.
 import Card from "@Components/Card.ts";
 import CardState from "@Components/card/CardState.ts";
 import InPlayState from "@Components/card/states/InPlayState.ts";
-import SettlingState from "@Components/card/states/SettlingState.ts";
 
 export default class MovingState extends CardState {
   private x: number
@@ -31,9 +30,9 @@ export default class MovingState extends CardState {
     const covers = this._card.covers;
     const cardRect = this._card.getBoundingClientRect();
     const oldRect = covers.getBoundingClientRect();
-    const settling = new SettlingState(this._card);
+    const state = new InPlayState(this._card);
 
-    this._card.setState(settling);
+    this._card.setState(state);
 
     document.dispatchEvent(new CustomEvent<CardMovedEvent>(
       "card:moved",
@@ -47,7 +46,7 @@ export default class MovingState extends CardState {
       }
     ));
 
-    if (this._card.state !== settling) return this._card.state;
+    if (this._card.state !== state) return this._card.state;
     else { // re-magnetizes to old position.
       this._card.style.top = `${oldRect.top + (covers instanceof Card ? Card.TOP_OFFSET : 0)}px`;
       this._card.style.left = `${oldRect.left}px`;

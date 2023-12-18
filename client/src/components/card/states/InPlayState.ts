@@ -23,7 +23,8 @@ export default class InPlayState extends CardState {
 
   onCardMoved(event: CustomEvent<CardMovedEvent>): CardState {
     if (this._card.coveredBy !== null) return this;
-    if (this._card.number === event.detail.card.number && this._card.family === event.detail.card.family) return this;
+    if (this._card === event.detail.card) return this;
+    if (this._card.family !== event.detail.card.family) return this;
 
     const rect = this._card.getBoundingClientRect();
     const eventInit: CustomEventInit<CardMagnetizeToEvent> = {
@@ -48,7 +49,8 @@ export default class InPlayState extends CardState {
     if (this._card.number !== event.detail.card.number) return this;
     if (this._card.family !== event.detail.card.family) return this;
 
-    const rect = event.detail.target.getBoundingClientRect();
+    const target = event.detail.target;
+    const rect = target.getBoundingClientRect();
     const covers = this._card.covers;
     const targetMagnetism: number = rectArea(getIntersectionRect(
       event.detail.state.card.rect,
@@ -57,7 +59,7 @@ export default class InPlayState extends CardState {
 
     if (this.currentMagnetism > targetMagnetism) return this;
 
-    this._card.style.top = `${rect.top + (covers instanceof Card ? Card.TOP_OFFSET : 0)}px`;
+    this._card.style.top = `${rect.top + (target instanceof Card ? Card.TOP_OFFSET : 0)}px`;
     this._card.style.left = `${rect.left}px`;
 
     // uncover previous this.covers
@@ -69,10 +71,10 @@ export default class InPlayState extends CardState {
     // cover new this.covers
     document.dispatchEvent(new CustomEvent<StackableEvent>(
       "stackable:push",
-      { detail: { stackable: event.detail.target, caller: this._card } }
+      { detail: { stackable: target, caller: this._card } }
     ));
 
-    this._card.setCovers(event.detail.target);
+    this._card.setCovers(target);
 
     return new InPlayState(this._card, targetMagnetism);
   }
