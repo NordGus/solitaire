@@ -25,6 +25,7 @@ export default class InPlayState extends CardState {
     if (this._card.coveredBy !== null) return this;
     if (this._card === event.detail.card) return this;
     if (this._card.family === "arcana" && event.detail.card.family !== "arcana") return this;
+    if (this._card.family !== "arcana" && event.detail.card.family === "arcana") return this;
     if (this._card.number === event.detail.card.number) return this;
     if (this._card.number < event.detail.card.number - 1) return this;
     if (this._card.number > event.detail.card.number + 1) return this;
