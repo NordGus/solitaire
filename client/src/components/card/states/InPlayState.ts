@@ -24,7 +24,10 @@ export default class InPlayState extends CardState {
   onCardMoved(event: CustomEvent<CardMovedEvent>): CardState {
     if (this._card.coveredBy !== null) return this;
     if (this._card === event.detail.card) return this;
-    if (this._card.family !== event.detail.card.family) return this;
+    if (this._card.family === "arcana" && event.detail.card.family !== "arcana") return this;
+    if (this._card.number === event.detail.card.number) return this;
+    if (this._card.number < event.detail.card.number - 1) return this;
+    if (this._card.number > event.detail.card.number + 1) return this;
 
     const rect = this._card.getBoundingClientRect();
     const eventInit: CustomEventInit<CardMagnetizeToEvent> = {
