@@ -5,6 +5,7 @@ import { AttachLayerEvent, CardMagnetizeToEvent, CardMovedEvent, StackableEvent 
 import Card from "@Components/Card.ts";
 import CardState from "@Components/card/CardState.ts";
 import MovingState from "@Components/card/states/MovingState.ts";
+import Slot from "@Components/Slot.ts";
 
 export default class InPlayState extends CardState {
   private readonly currentMagnetism: number;
@@ -13,6 +14,16 @@ export default class InPlayState extends CardState {
     super(card);
 
     this.currentMagnetism = currentMagnetism ? currentMagnetism : 0;
+
+    if (this._card.covers instanceof Slot) {
+      this._card.setLayer(1);
+    } else if (this._card.covers instanceof Card && this._card.covers.state instanceof InPlayState) {
+      this._card.setLayer(this._card.covers.layer + 1);
+    } else {
+      throw new Error("invalid CardState");
+    }
+
+    this._card.style.zIndex = `${this._card.layer}`;
   }
 
   onStartMovement(event: MouseEvent): CardState {

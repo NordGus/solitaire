@@ -26,7 +26,7 @@ export default class Card extends HTMLElement {
   private _state: CardState
   private _covers: Card | Slot | RestingSlot
   private _coveredBy: Card | null
-  private readonly _layer: number
+  private _layer: number
 
   public readonly number: CardNumber
   public readonly family: CardFamily
@@ -52,6 +52,7 @@ export default class Card extends HTMLElement {
   get coveredBy(): Card | null { return this._coveredBy }
 
   get layer(): number { return this._layer }
+  setLayer(layer: number) { this._layer = layer }
 
   connectedCallback(): void {
     this.addEventListener("mousedown", this.onStartMovement.bind(this));

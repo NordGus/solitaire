@@ -4,6 +4,8 @@ import CardState from "@Components/card/CardState.ts";
 import InPlayState from "@Components/card/states/InPlayState.ts";
 
 export default class MovingState extends CardState {
+  static MOVEMENT_Z_INDEX: number = 60
+
   private x: number
   private y: number
 
@@ -12,6 +14,8 @@ export default class MovingState extends CardState {
 
     this.x = x;
     this.y = y;
+
+    this._card.style.zIndex = `${MovingState.MOVEMENT_Z_INDEX}`;
   }
 
   onMove(event: MouseEvent): CardState {
@@ -50,6 +54,7 @@ export default class MovingState extends CardState {
     else { // re-magnetizes to old position.
       this._card.style.top = `${oldRect.top + (covers instanceof Card ? Card.TOP_OFFSET : 0)}px`;
       this._card.style.left = `${oldRect.left}px`;
+      this._card.style.zIndex = `${this._card.layer}`;
 
       return new InPlayState(this._card);
     }
