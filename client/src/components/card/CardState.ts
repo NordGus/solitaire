@@ -4,14 +4,14 @@ import Card from "@Components/Card.ts";
 export default abstract class CardState {
   protected _card: Card;
 
-  constructor(card: Card) {
+  protected constructor(card: Card) {
     this._card = card;
   }
 
-  abstract onStartMovement(event: MouseEvent): CardState;
-  abstract onMove(event: MouseEvent): CardState;
-  abstract onStopMovement(): CardState;
-  abstract onMagnetize(event: CustomEvent<CardMagnetizeToEvent>): CardState;
-  abstract onAttach(event: CustomEvent<AttachLayerEvent>): CardState;
-  abstract onCardMoved(event: CustomEvent<CardMovedEvent>): CardState;
+  abstract onStartMovement(event: MouseEvent): void;
+  abstract onMove(event: MouseEvent): void;
+  abstract onStopMovement(): void;
+  abstract onMagnetize(event: CustomEvent<CardMagnetizeToEvent>): void;
+  abstract onAttach(event: CustomEvent<AttachLayerEvent>): void;
+  abstract onCardMoved(event: CustomEvent<CardMovedEvent>): void;
 }

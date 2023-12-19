@@ -16,9 +16,9 @@ export default class InPlayState extends CardState {
     this.currentMagnetism = currentMagnetism ? currentMagnetism : 0;
 
     if (this._card.covers instanceof Slot) {
-      this._card.setLayer(1);
+      this._card.layer = 1;
     } else if (this._card.covers instanceof Card && this._card.covers.state instanceof InPlayState) {
-      this._card.setLayer(this._card.covers.layer + 1);
+      this._card.layer = this._card.covers.layer + 1;
     } else {
       throw new Error("invalid CardState");
     }
@@ -26,20 +26,20 @@ export default class InPlayState extends CardState {
     this._card.style.zIndex = `${this._card.layer}`;
   }
 
-  onStartMovement(event: MouseEvent): CardState {
-    if (this._card.coveredBy !== null) return this;
+  onStartMovement(event: MouseEvent): void {
+    if (this._card.coveredBy !== null) return;
 
-    return new MovingState(this._card, event.clientX, event.clientY);
+    this._card.state = new MovingState(this._card, event.clientX, event.clientY);
   }
 
-  onCardMoved(event: CustomEvent<CardMovedEvent>): CardState {
-    if (this._card.coveredBy !== null) return this;
-    if (this._card === event.detail.card) return this;
-    if (this._card.family === "arcana" && event.detail.card.family !== "arcana") return this;
-    if (this._card.family !== "arcana" && event.detail.card.family === "arcana") return this;
-    if (this._card.number === event.detail.card.number) return this;
-    if (this._card.number < event.detail.card.number - 1) return this;
-    if (this._card.number > event.detail.card.number + 1) return this;
+  onCardMoved(event: CustomEvent<CardMovedEvent>): void {
+    if (this._card.coveredBy !== null) return;
+    if (this._card === event.detail.card) return;
+    if (this._card.family === "arcana" && event.detail.card.family !== "arcana") return;
+    if (this._card.family !== "arcana" && event.detail.card.family === "arcana") return;
+    if (this._card.number === event.detail.card.number) return;
+    if (this._card.number < event.detail.card.number - 1) return;
+    if (this._card.number > event.detail.card.number + 1) return;
 
     const rect = this._card.getBoundingClientRect();
     const eventInit: CustomEventInit<CardMagnetizeToEvent> = {
@@ -56,13 +56,11 @@ export default class InPlayState extends CardState {
     if (collides(event.detail.state.card.rect, this._card.getBoundingClientRect())) {
       document.dispatchEvent(new CustomEvent<CardMagnetizeToEvent>("card:magnetize:to", eventInit));
     }
-
-    return this;
   }
 
-  onMagnetize(event: CustomEvent<CardMagnetizeToEvent>): CardState {
-    if (this._card.number !== event.detail.card.number) return this;
-    if (this._card.family !== event.detail.card.family) return this;
+  onMagnetize(event: CustomEvent<CardMagnetizeToEvent>): void {
+    if (this._card.number !== event.detail.card.number) return;
+    if (this._card.family !== event.detail.card.family) return;
 
     const target = event.detail.target;
     const rect = target.getBoundingClientRect();
@@ -72,7 +70,7 @@ export default class InPlayState extends CardState {
       event.detail.state.target.rect
     ));
 
-    if (this.currentMagnetism > targetMagnetism) return this;
+    if (this.currentMagnetism > targetMagnetism) return;
 
     this._card.style.top = `${rect.top + (target instanceof Card ? Card.TOP_OFFSET : 0)}px`;
     this._card.style.left = `${rect.left}px`;
@@ -89,15 +87,13 @@ export default class InPlayState extends CardState {
       { detail: { stackable: target, caller: this._card } }
     ));
 
-    this._card.setCovers(target);
-
-    return new InPlayState(this._card, targetMagnetism);
+    this._card.state = new InPlayState(this._card, targetMagnetism);
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  onAttach(_event: CustomEvent<AttachLayerEvent>): CardState { return this }
+  onAttach(_event: CustomEvent<AttachLayerEvent>): void {}
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  onMove(_event: MouseEvent): CardState { return this }
+  onMove(_event: MouseEvent): void {}
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  onStopMovement(): CardState { return this }
+  onStopMovement(): void {}
 }

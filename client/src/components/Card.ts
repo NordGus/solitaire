@@ -44,15 +44,15 @@ export default class Card extends HTMLElement {
   }
 
   get state(): CardState { return this._state }
-  setState(state: CardState) { this._state = state }
+  set state(state: CardState) { this._state = state }
 
   get covers(): Card | Slot | RestingSlot { return this._covers }
-  setCovers(covers: Card | Slot | RestingSlot): void { this._covers = covers }
+  set covers(covers: Card | Slot | RestingSlot) { this._covers = covers }
 
   get coveredBy(): Card | null { return this._coveredBy }
 
   get layer(): number { return this._layer }
-  setLayer(layer: number) { this._layer = layer }
+  set layer(layer: number) { this._layer = layer }
 
   connectedCallback(): void {
     this.addEventListener("mousedown", this.onStartMovement.bind(this));
@@ -102,12 +102,12 @@ export default class Card extends HTMLElement {
     document.removeEventListener("card:magnetize:to", this.onMagnetizeTo.bind(this) as EventListener);
   }
 
-  private onStartMovement(event: MouseEvent): void { this._state = this._state.onStartMovement(event) }
-  private onMove(event: MouseEvent): void { this._state = this._state.onMove(event) }
-  private onStopMovement(): void { this._state = this._state.onStopMovement() }
-  private onMagnetizeTo(event: CustomEvent<CardMagnetizeToEvent>): void { this._state = this._state.onMagnetize(event) }
-  private onAttachLayer(event: CustomEvent<AttachLayerEvent>): void { this._state = this._state.onAttach(event) }
-  private onCardMoved(event: CustomEvent<CardMovedEvent>): void { this._state = this._state.onCardMoved(event) }
+  private onStartMovement(event: MouseEvent): void { this._state.onStartMovement(event) }
+  private onMove(event: MouseEvent): void { this._state.onMove(event) }
+  private onStopMovement(): void { this._state.onStopMovement() }
+  private onMagnetizeTo(event: CustomEvent<CardMagnetizeToEvent>): void { this._state.onMagnetize(event) }
+  private onAttachLayer(event: CustomEvent<AttachLayerEvent>): void { this._state.onAttach(event) }
+  private onCardMoved(event: CustomEvent<CardMovedEvent>): void { this._state.onCardMoved(event) }
 
   private onPush(event: CustomEvent<StackableEvent>): void {
     if (event.detail.stackable !== this) return;

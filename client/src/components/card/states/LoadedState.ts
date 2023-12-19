@@ -8,8 +8,8 @@ import RestingSlot from "@Components/RestingSlot.ts";
 export default class LoadedState extends CardState {
   constructor(card: Card) { super(card) }
 
-  onAttach(event: CustomEvent<AttachLayerEvent>): CardState {
-    if (this._card.layer !== event.detail.layer) return this;
+  onAttach(event: CustomEvent<AttachLayerEvent>): void {
+    if (this._card.layer !== event.detail.layer) return;
 
     const rect = this._card.covers.getBoundingClientRect();
 
@@ -21,18 +21,18 @@ export default class LoadedState extends CardState {
       { bubbles: true, detail: { stackable: this._card.covers, caller: this._card } }
     ));
 
-    if (this._card.covers instanceof RestingSlot) return new RestingState(this._card);
-    return new InPlayState(this._card);
+    if (this._card.covers instanceof RestingSlot) this._card.state = new RestingState(this._card);
+    else this._card.state = new InPlayState(this._card);
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  onStartMovement(_event: MouseEvent): CardState { return this }
+  onStartMovement(_event: MouseEvent): void {}
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  onMove(_event: MouseEvent): CardState { return this }
+  onMove(_event: MouseEvent): void {}
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  onStopMovement(): CardState { return this }
+  onStopMovement(): void {}
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  onMagnetize(_event: CustomEvent<CardMagnetizeToEvent>): CardState { return this }
+  onMagnetize(_event: CustomEvent<CardMagnetizeToEvent>): void {}
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  onCardMoved(_event: CustomEvent<CardMovedEvent>): CardState { return this }
+  onCardMoved(_event: CustomEvent<CardMovedEvent>): void {}
 }

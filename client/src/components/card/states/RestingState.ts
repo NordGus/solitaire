@@ -11,9 +11,9 @@ export default class RestingState extends CardState {
     this._card.classList.toggle("cursor-move", false);
 
     if (this._card.covers instanceof RestingSlot) {
-      this._card.setLayer(1);
+      this._card.layer = 1;
     } else if (this._card.covers instanceof Card && this._card.covers.state instanceof RestingState) {
-      this._card.setLayer(this._card.covers.layer + 1);
+      this._card.layer = this._card.covers.layer + 1;
     } else {
       throw new Error("invalid CardState");
     }
@@ -22,15 +22,15 @@ export default class RestingState extends CardState {
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  onAttach(_event: CustomEvent<AttachLayerEvent>): CardState { return this }
+  onAttach(_event: CustomEvent<AttachLayerEvent>): void {}
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  onStartMovement(_event: MouseEvent): CardState { return this }
+  onStartMovement(_event: MouseEvent): void {}
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  onMove(_event: MouseEvent): CardState { return this }
+  onMove(_event: MouseEvent): void {}
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  onStopMovement(): CardState { return this }
+  onStopMovement(): void {}
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  onMagnetize(_event: CustomEvent<CardMagnetizeToEvent>): CardState { return this }
+  onMagnetize(_event: CustomEvent<CardMagnetizeToEvent>): void {}
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  onCardMoved(_event: CustomEvent<CardMovedEvent>): CardState { return this }
+  onCardMoved(_event: CustomEvent<CardMovedEvent>): void {}
 }

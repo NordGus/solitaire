@@ -18,7 +18,7 @@ export default class MovingState extends CardState {
     this._card.style.zIndex = `${MovingState.MOVEMENT_Z_INDEX}`;
   }
 
-  onMove(event: MouseEvent): CardState {
+  onMove(event: MouseEvent): void {
     const x = event.clientX;
     const y = event.clientY;
 
@@ -26,17 +26,15 @@ export default class MovingState extends CardState {
     this._card.style.left = `${this._card.offsetLeft - (this.x - x)}px`;
     this.x = x;
     this.y = y;
-
-    return this;
   }
 
-  onStopMovement(): CardState {
+  onStopMovement(): void {
     const covers = this._card.covers;
     const cardRect = this._card.getBoundingClientRect();
     const oldRect = covers.getBoundingClientRect();
     const state = new InPlayState(this._card);
 
-    this._card.setState(state);
+    this._card.state = state;
 
     document.dispatchEvent(new CustomEvent<CardMovedEvent>(
       "card:moved",
@@ -50,22 +48,22 @@ export default class MovingState extends CardState {
       }
     ));
 
-    if (this._card.state !== state) return this._card.state;
-    else { // re-magnetizes to old position.
+    if (this._card.state === state) { // re-magnetizes to old position.
       this._card.style.top = `${oldRect.top + (covers instanceof Card ? Card.TOP_OFFSET : 0)}px`;
       this._card.style.left = `${oldRect.left}px`;
-      this._card.style.zIndex = `${this._card.layer}`;
 
-      return new InPlayState(this._card);
+      this._card.state = new InPlayState(this._card);
     }
+
+    // TODO: Implement an event to force attachment to resting cards.
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  onAttach(_event: CustomEvent<AttachLayerEvent>): CardState  { return this }
+  onAttach(_event: CustomEvent<AttachLayerEvent>): void {}
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  onStartMovement(_event: MouseEvent): CardState  { return this }
+  onStartMovement(_event: MouseEvent): void {}
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  onMagnetize(_event: CustomEvent<CardMagnetizeToEvent>): CardState  { return this }
+  onMagnetize(_event: CustomEvent<CardMagnetizeToEvent>): void {}
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  onCardMoved(_event: CustomEvent<CardMovedEvent>): CardState  { return this }
+  onCardMoved(_event: CustomEvent<CardMovedEvent>): void {}
 }
