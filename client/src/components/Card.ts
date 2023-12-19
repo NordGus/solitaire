@@ -41,6 +41,9 @@ export default class Card extends HTMLElement {
 
     this.number = parseInt(this.dataset.number!) as CardNumber;
     this.family = this.dataset.family! as CardFamily;
+
+    this.style.top = "5rem";
+    this.style.left = `${(this.parentElement!.offsetWidth - this.offsetWidth)/2}px`;
   }
 
   get state(): CardState { return this._state }

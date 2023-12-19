@@ -15,14 +15,17 @@ export default class Slot extends HTMLElement {
   }
 
   connectedCallback(): void {
+    this.addEventListener("slot:resize", this.onResize.bind(this));
+
     document.addEventListener("card:moved", this.onCardMoved.bind(this) as EventListener);
     document.addEventListener("stackable:push", this.onPush.bind(this) as EventListener);
     document.addEventListener("stackable:pop", this.onPop.bind(this) as EventListener);
-
     this.dispatchEvent(new Event("game:element:connected", { bubbles: true }));
   }
 
   disconnectedCallback(): void {
+    this.removeEventListener("slot:resize", this.onResize.bind(this));
+
     document.removeEventListener("card:moved", this.onCardMoved.bind(this) as EventListener);
     document.removeEventListener("stackable:push", this.onPush.bind(this) as EventListener);
     document.removeEventListener("stackable:pop", this.onPop.bind(this) as EventListener);
@@ -46,6 +49,12 @@ export default class Slot extends HTMLElement {
     if (collides(event.detail.state.card.rect, eventInitDict.detail!.state.target.rect)) {
       document.dispatchEvent(new CustomEvent<CardMagnetizeToEvent>("card:magnetize:to", eventInitDict));
     }
+  }
+
+  private onResize(): void {
+    const lastChild = this.lastElementChild!;
+
+    this.style.height = `${lastChild.getBoundingClientRect().bottom - this.getBoundingClientRect().top}px`
   }
 
   private onPush(event: CustomEvent<StackableEvent>): void {
