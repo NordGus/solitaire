@@ -61,6 +61,7 @@ export default class Card extends HTMLElement {
     this.addEventListener("mouseleave", this.onStopMovement.bind(this));
 
     document.addEventListener("card:moved", this.onCardMoved.bind(this) as EventListener);
+    document.addEventListener("card:moved:settled", this.onCardMovementSettled.bind(this) as EventListener);
     document.addEventListener("stackable:push", this.onPush.bind(this) as EventListener);
     document.addEventListener("stackable:pop", this.onPop.bind(this) as EventListener);
 
@@ -94,6 +95,7 @@ export default class Card extends HTMLElement {
     this.removeEventListener("mouseleave", this.onStopMovement.bind(this));
 
     document.removeEventListener("card:moved", this.onCardMoved.bind(this) as EventListener);
+    document.removeEventListener("card:moved:settled", this.onCardMovementSettled.bind(this) as EventListener);
     document.removeEventListener("stackable:push", this.onPush.bind(this) as EventListener);
     document.removeEventListener("stackable:pop", this.onPop.bind(this) as EventListener);
 
@@ -108,6 +110,7 @@ export default class Card extends HTMLElement {
   private onMagnetizeTo(event: CustomEvent<CardMagnetizeToEvent>): void { this._state.onMagnetize(event) }
   private onAttachLayer(event: CustomEvent<AttachLayerEvent>): void { this._state.onAttach(event) }
   private onCardMoved(event: CustomEvent<CardMovedEvent>): void { this._state.onCardMoved(event) }
+  private onCardMovementSettled(): void { this._state.onCardMovementSettled() }
 
   private onPush(event: CustomEvent<StackableEvent>): void {
     if (event.detail.stackable !== this) return;

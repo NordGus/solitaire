@@ -55,7 +55,7 @@ export default class MovingState extends CardState {
       this._card.state = new InPlayState(this._card);
     }
 
-    // TODO: Implement an event to force attachment to resting cards.
+    document.dispatchEvent(new Event("card:moved:settled"));
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -66,4 +66,5 @@ export default class MovingState extends CardState {
   onMagnetize(_event: CustomEvent<CardMagnetizeToEvent>): void {}
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   onCardMoved(_event: CustomEvent<CardMovedEvent>): void {}
+  onCardMovementSettled(): void {}
 }

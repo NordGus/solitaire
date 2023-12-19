@@ -29,10 +29,10 @@ export default class LoadedState extends CardState {
   onStartMovement(_event: MouseEvent): void {}
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   onMove(_event: MouseEvent): void {}
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   onStopMovement(): void {}
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   onMagnetize(_event: CustomEvent<CardMagnetizeToEvent>): void {}
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   onCardMoved(_event: CustomEvent<CardMovedEvent>): void {}
+  onCardMovementSettled(): void {}
 }

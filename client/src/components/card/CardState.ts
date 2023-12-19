@@ -14,4 +14,5 @@ export default abstract class CardState {
   abstract onMagnetize(event: CustomEvent<CardMagnetizeToEvent>): void;
   abstract onAttach(event: CustomEvent<AttachLayerEvent>): void;
   abstract onCardMoved(event: CustomEvent<CardMovedEvent>): void;
+  abstract onCardMovementSettled(): void;
 }

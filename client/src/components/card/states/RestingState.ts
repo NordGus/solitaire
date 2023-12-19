@@ -21,6 +21,13 @@ export default class RestingState extends CardState {
     this._card.style.zIndex = `${this._card.layer}`;
   }
 
+  onCardMovementSettled(): void {
+    if (this._card.family !== "arcana" && this._card.number > 1) return;
+    if (this._card.family === "arcana" && (this._card.number < 21 || this._card.number > 0)) return;
+
+    console.log("root card");
+  }
+
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   onAttach(_event: CustomEvent<AttachLayerEvent>): void {}
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
