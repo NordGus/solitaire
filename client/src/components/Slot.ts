@@ -1,5 +1,6 @@
 import collides from "@/helpers/collides.ts";
 import { CardMagnetizeToEvent, CardMovedEvent, SlotNumber, SlotStackEvent } from "@/types.ts";
+import Card from "@Components/Card.ts";
 
 export default class Slot extends HTMLElement {
   public readonly number: SlotNumber
@@ -49,6 +50,7 @@ export default class Slot extends HTMLElement {
   private onPush(event: CustomEvent<SlotStackEvent>): void {
     this.appendChild(event.detail.card);
     event.detail.card.layer = this.childElementCount;
+    event.detail.card.style.top = `${Card.TOP_OFFSET * (this.childElementCount - 1)}px`;
     this.resize();
   }
 
