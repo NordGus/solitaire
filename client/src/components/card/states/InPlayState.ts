@@ -64,7 +64,6 @@ export default class InPlayState extends CardState {
 
     const target = event.detail.target;
     const rect = target.getBoundingClientRect();
-    const covers = this._card.covers;
     const targetMagnetism: number = rectArea(getIntersectionRect(
       event.detail.state.card.rect,
       event.detail.state.target.rect
@@ -78,7 +77,7 @@ export default class InPlayState extends CardState {
     // uncover previous this.covers
     document.dispatchEvent(new CustomEvent<StackableEvent>(
       "stackable:pop",
-      { detail: { stackable: covers, caller: this._card } }
+      { detail: { stackable: this._card.covers, caller: this._card } }
     ));
 
     // cover new this.covers
@@ -87,6 +86,7 @@ export default class InPlayState extends CardState {
       { detail: { stackable: target, caller: this._card } }
     ));
 
+    this._card.covers = target;
     this._card.state = new InPlayState(this._card, targetMagnetism);
   }
 
