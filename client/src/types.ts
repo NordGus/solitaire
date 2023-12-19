@@ -19,3 +19,4 @@ export type CardMagnetizeToEvent = {
   }
 };
 export type StackableEvent = { stackable: Card | Slot | RestingSlot, caller: Card };
+export type SlotStackEvent = { card: Card };

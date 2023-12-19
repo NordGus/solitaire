@@ -1,34 +1,29 @@
 import collides from "@/helpers/collides.ts";
-import { CardMagnetizeToEvent, CardMovedEvent, SlotNumber, StackableEvent } from "@/types.ts";
-import Card from "@Components/Card.ts";
+import { CardMagnetizeToEvent, CardMovedEvent, SlotNumber, SlotStackEvent } from "@/types.ts";
 
 export default class Slot extends HTMLElement {
-  private coveredBy: Card | null
-
   public readonly number: SlotNumber
 
   constructor() {
     super();
 
     this.number = parseInt(this.dataset.number!) as SlotNumber
-    this.coveredBy = null;
   }
 
   connectedCallback(): void {
-    this.addEventListener("slot:resize", this.onResize.bind(this));
+    this.addEventListener("slot:push", this.onPush.bind(this) as EventListener);
+    this.addEventListener("slot:pop", this.onPop.bind(this));
 
-    document.addEventListener("card:moved", this.onCardMoved.bind(this) as EventListener);
-    document.addEventListener("stackable:push", this.onPush.bind(this) as EventListener);
-    document.addEventListener("stackable:pop", this.onPop.bind(this) as EventListener);
+    // document.addEventListener("card:moved", this.onCardMoved.bind(this) as EventListener);
+
     this.dispatchEvent(new Event("game:element:connected", { bubbles: true }));
   }
 
   disconnectedCallback(): void {
-    this.removeEventListener("slot:resize", this.onResize.bind(this));
+    this.removeEventListener("slot:push", this.onPush.bind(this) as EventListener);
+    this.removeEventListener("slot:pop", this.onPop.bind(this));
 
-    document.removeEventListener("card:moved", this.onCardMoved.bind(this) as EventListener);
-    document.removeEventListener("stackable:push", this.onPush.bind(this) as EventListener);
-    document.removeEventListener("stackable:pop", this.onPop.bind(this) as EventListener);
+    // document.removeEventListener("card:moved", this.onCardMoved.bind(this) as EventListener);
   }
 
   private onCardMoved(event: CustomEvent<CardMovedEvent>): void {
@@ -51,25 +46,23 @@ export default class Slot extends HTMLElement {
     }
   }
 
-  private onResize(): void {
-    const lastChild = this.lastElementChild!;
-
-    this.style.height = `${lastChild.getBoundingClientRect().bottom - this.getBoundingClientRect().top}px`
+  private onPush(event: CustomEvent<SlotStackEvent>): void {
+    this.appendChild(event.detail.card);
+    event.detail.card.layer = this.childElementCount;
+    this.resize();
   }
 
-  private onPush(event: CustomEvent<StackableEvent>): void {
-    if (event.detail.stackable !== this) return;
-    if (this.coveredBy !== null) return;
-
-    this.coveredBy = event.detail.caller;
+  private onPop(): void {
+    this.resize();
   }
 
-  private onPop(event: CustomEvent<StackableEvent>): void {
-    if (event.detail.stackable !== this) return;
-    if (this.coveredBy === null) return;
-    if (event.detail.caller !== this.coveredBy) return;
+  private resize(): void {
+    if (this.childElementCount > 0) {
+      const top = this.getBoundingClientRect().top;
+      const bottom = this.lastElementChild!.getBoundingClientRect().bottom;
 
-    this.coveredBy = null;
+      this.style.height = `${bottom - top}px`;
+    } else this.style.removeProperty("height");
   }
 }
 

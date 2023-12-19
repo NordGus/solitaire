@@ -1,4 +1,4 @@
-import { AttachLayerEvent, CardMagnetizeToEvent, CardMovedEvent, StackableEvent } from "@/types.ts";
+import { AttachLayerEvent, CardMagnetizeToEvent, CardMovedEvent, SlotStackEvent, StackableEvent } from "@/types.ts";
 import Card from "@Components/Card.ts";
 import CardState from "@Components/card/CardState.ts";
 import InPlayState from "@Components/card/states/InPlayState.ts";
@@ -12,22 +12,32 @@ export default class LoadedState extends CardState {
   onAttach(event: CustomEvent<AttachLayerEvent>): void {
     if (this._card.layer !== event.detail.layer) return;
 
-    if (this._card.covers instanceof Slot || this._card.covers instanceof RestingSlot) {
+    if (this._card.covers instanceof Slot) {
+      this._card.style.removeProperty("left");
+      this._card.style.removeProperty("top");
+
+      this._card.covers.dispatchEvent(new CustomEvent<SlotStackEvent>(
+        "slot:push",
+        { detail: { card: this._card } }
+      ));
+    } else if (this._card.covers instanceof RestingSlot) { // TODO: refactor to follow the standard from the slots
       this._card.style.removeProperty("left");
       this._card.style.removeProperty("top");
       this._card.covers.appendChild(this._card);
     } else {
       this._card.style.removeProperty("left");
       this._card.style.top = `${Card.TOP_OFFSET * (this._card.layer - 1)}px`;
-      this._card.covers.parentElement!.appendChild(this._card);
+
+      this._card.covers.parentElement!.dispatchEvent(new CustomEvent<SlotStackEvent>(
+        "slot:push",
+        { detail: { card: this._card } }
+      ));
     }
 
     this._card.dispatchEvent(new CustomEvent<StackableEvent>(
       "stackable:push",
       { bubbles: true, detail: { stackable: this._card.covers, caller: this._card } }
     ));
-
-    this._card.dispatchEvent(new Event("slot:resize", { bubbles: true }));
 
     if (this._card.covers instanceof RestingSlot) this._card.state = new RestingState(this._card);
     else this._card.state = new InPlayState(this._card);
