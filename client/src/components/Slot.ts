@@ -50,7 +50,7 @@ export default class Slot extends HTMLElement {
   private onPush(event: CustomEvent<SlotStackEvent>): void {
     this.appendChild(event.detail.card);
     event.detail.card.layer = this.childElementCount;
-    event.detail.card.style.top = `${Card.TOP_OFFSET * (this.childElementCount - 1)}px`;
+    event.detail.card.style.top = `${Card.TOP_OFFSET * (event.detail.card.layer - 1)}px`;
     this.resize();
   }
 

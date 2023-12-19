@@ -17,7 +17,7 @@ export default class LoadedState extends CardState {
 
       this._card.covers.dispatchEvent(new CustomEvent<SlotStackEvent>(
         "slot:push",
-        { detail: { card: this._card } }
+        { bubbles: true, detail: { card: this._card } }
       ));
     } else { // TODO: refactor to follow the standard from the slots
       this._card.style.removeProperty("left");
