@@ -19,6 +19,7 @@ export default class RestingState extends CardState {
     }
 
     this._card.style.zIndex = `${this._card.layer}`;
+    this._card.removeAttribute("draggable");
   }
 
   onCardMovementSettled(): void {
