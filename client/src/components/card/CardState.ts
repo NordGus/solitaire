@@ -1,4 +1,4 @@
-import { AttachLayerEvent } from "@/types.ts";
+import { AttachLayerEvent, StackableEvent } from "@/types.ts";
 import Card from "@Components/Card.ts";
 
 export default abstract class CardState {
@@ -11,5 +11,6 @@ export default abstract class CardState {
   abstract onAttach(event: CustomEvent<AttachLayerEvent>): void;
   abstract onDragStart(event: DragEvent): void;
   abstract onDragEnd(): void;
+  abstract onFlushAppend(event: StackableEvent): void;
   abstract onCardMovementSettled(): void;
 }
