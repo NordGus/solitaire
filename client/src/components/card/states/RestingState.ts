@@ -1,7 +1,6 @@
 import { AttachLayerEvent } from "@/types.ts";
 import Card from "@Components/Card.ts";
 import CardState from "@Components/card/CardState.ts";
-import RestingSlot from "@Components/RestingSlot.ts";
 
 // TODO: Implement future logic to connect cards here.
 export default class RestingState extends CardState {
@@ -9,17 +8,9 @@ export default class RestingState extends CardState {
     super(card);
 
     this._card.classList.toggle("cursor-grab", false);
-
-    if (this._card.covers instanceof RestingSlot) {
-      this._card.layer = 1;
-    } else if (this._card.covers instanceof Card && this._card.covers.state instanceof RestingState) {
-      this._card.layer = this._card.covers.layer + 1;
-    } else {
-      throw new Error("invalid CardState");
-    }
+    this._card.removeAttribute("draggable");
 
     this._card.style.zIndex = `${this._card.layer}`;
-    this._card.removeAttribute("draggable");
   }
 
   onCardMovementSettled(): void {
