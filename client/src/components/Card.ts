@@ -1,6 +1,7 @@
 import { AttachLayerEvent, CardFamily, CardNumber, StackableEvent } from "@/types.ts";
 import CardState from "@Components/card/CardState.ts";
 import LoadedState from "@Components/card/states/LoadedState.ts";
+import RestingState from "@Components/card/states/RestingState.ts";
 import RestingSlot from "@Components/RestingSlot.ts";
 import Slot from "@Components/Slot.ts";
 
@@ -65,6 +66,7 @@ export default class Card extends HTMLElement {
   set covers(covers: Card | Slot | RestingSlot | null) { this._covers = covers }
 
   get coveredBy(): Card | null { return this._coveredBy }
+  set coveredBy(coveredBy: Card | null) { this._coveredBy = coveredBy }
 
   get layer(): number { return this._layer }
   set layer(layer: number) { this._layer = layer }
@@ -73,9 +75,10 @@ export default class Card extends HTMLElement {
     this.addEventListener("dragstart", this.onDragStart.bind(this));
     this.addEventListener("dragend", this.onDragEnd.bind(this));
 
+    this.addEventListener("card:push", this.onPush.bind(this) as EventListener);
+    this.addEventListener("stackable:pop", this.onPop.bind(this) as EventListener);
+
     document.addEventListener("card:moved:settled", this.onCardMovementSettled.bind(this) as EventListener);
-    document.addEventListener("stackable:push", this.onPush.bind(this) as EventListener);
-    document.addEventListener("stackable:pop", this.onPop.bind(this) as EventListener);
 
     document.addEventListener("game:elements:attach:layer", this.onAttach.bind(this) as EventListener);
 
@@ -100,9 +103,10 @@ export default class Card extends HTMLElement {
     this.removeEventListener("dragstart", this.onDragStart.bind(this));
     this.removeEventListener("dragend", this.onDragEnd.bind(this));
 
+    this.removeEventListener("stackable:push", this.onPush.bind(this) as EventListener);
+    this.removeEventListener("stackable:pop", this.onPop.bind(this) as EventListener);
+
     document.removeEventListener("card:moved:settled", this.onCardMovementSettled.bind(this) as EventListener);
-    document.removeEventListener("stackable:push", this.onPush.bind(this) as EventListener);
-    document.removeEventListener("stackable:pop", this.onPop.bind(this) as EventListener);
 
     document.removeEventListener("game:elements:attach:layer", this.onAttach.bind(this) as EventListener);
   }
@@ -115,18 +119,26 @@ export default class Card extends HTMLElement {
   private onPush(event: CustomEvent<StackableEvent>): void {
     if (event.detail.stackable !== this) return;
     if (this._coveredBy !== null) return;
-    event.stopPropagation();
 
     this._coveredBy = event.detail.caller;
+
+    if (this._state instanceof RestingState) return;
+
+    this.setAttribute("draggable", "false");
+    this.classList.toggle("cursor-grab", false);
   }
 
   private onPop(event: CustomEvent<StackableEvent>): void {
     if (event.detail.stackable !== this) return;
     if (this._coveredBy === null) return;
     if (event.detail.caller !== this._coveredBy) return;
-    event.stopPropagation();
 
     this._coveredBy = null;
+
+    if (this._state instanceof RestingState) return;
+
+    this.setAttribute("draggable", "true");
+    this.classList.toggle("cursor-grab", true);
   }
 }
 
