@@ -1,4 +1,4 @@
-import { AttachLayerEvent } from "@/types.ts";
+import { AttachLayerEvent, StackableEvent } from "@/types.ts";
 import Card from "@Components/Card.ts";
 import CardState from "@Components/card/CardState.ts";
 import MovingState from "@Components/card/states/MovingState.ts";
@@ -19,6 +19,11 @@ export default class InPlayState extends CardState {
     transfer.setData("number", `${this._card.number}`);
 
     this._card.state = new MovingState(this._card);
+  }
+
+
+  onFlushAppend(event: StackableEvent): void {
+
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
