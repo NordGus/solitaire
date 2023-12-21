@@ -34,5 +34,4 @@ export default class MovingState extends CardState {
   onDragStart(_event: DragEvent): void {}
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   onFlushAppend(_event: CustomEvent<StackableEvent>): void {}
-  onCardMovementSettled(): void {}
 }

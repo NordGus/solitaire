@@ -33,5 +33,4 @@ export default class LoadedState extends CardState {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   onFlushAppend(_event: CustomEvent<StackableEvent>): void {}
   onDragEnd(): void {}
-  onCardMovementSettled(): void {}
 }

@@ -48,5 +48,4 @@ export default class InPlayState extends CardState {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   onAttach(_event: CustomEvent<AttachLayerEvent>): void {}
   onDragEnd(): void {}
-  onCardMovementSettled(): void {}
 }
