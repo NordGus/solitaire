@@ -63,6 +63,8 @@ export default class InPlayState extends CardState {
 
     this._card.covers = destination.lastElementChild as Card | null;
     this._card.state = new RestingState(this._card);
+
+    this._card.dispatchEvent(new Event("card:movement:settled", { bubbles: true }));
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

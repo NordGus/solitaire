@@ -8,4 +8,4 @@ export type SlotNumber = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10;
 export type AttachLayerEvent = { layer: number };
 
 export type StackableEvent = { card: Card };
-export type RecallCardEvent = { number: CardNumber, family: CardFamily, caller: RestingSlot };
+export type RecallCardEvent = { number: number, family: CardFamily, caller: RestingSlot };
