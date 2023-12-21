@@ -77,6 +77,7 @@ export default class Card extends HTMLElement {
 
     this.addEventListener("stackable:push", this.onPush.bind(this) as EventListener);
     this.addEventListener("stackable:pop", this.onPop.bind(this) as EventListener);
+    this.addEventListener("card:flush:append", this.onFlushAppend.bind(this) as EventListener);
 
     document.addEventListener("card:moved:settled", this.onCardMovementSettled.bind(this) as EventListener);
 
@@ -105,6 +106,7 @@ export default class Card extends HTMLElement {
 
     this.removeEventListener("stackable:push", this.onPush.bind(this) as EventListener);
     this.removeEventListener("stackable:pop", this.onPop.bind(this) as EventListener);
+    this.removeEventListener("card:flush:append", this.onFlushAppend.bind(this) as EventListener);
 
     document.removeEventListener("card:moved:settled", this.onCardMovementSettled.bind(this) as EventListener);
 
@@ -115,6 +117,7 @@ export default class Card extends HTMLElement {
   private onDragEnd(): void { this._state.onDragEnd() }
   private onAttach(event: CustomEvent<AttachLayerEvent>): void { this._state.onAttach(event) }
   private onCardMovementSettled(): void { this._state.onCardMovementSettled() }
+  private onFlushAppend(event: CustomEvent<StackableEvent>): void { this._state.onFlushAppend(event) }
 
   private onPush(event: CustomEvent<StackableEvent>): void {
     if (this._coveredBy !== null) return;
