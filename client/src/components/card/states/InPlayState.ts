@@ -2,6 +2,8 @@ import { AttachLayerEvent, RecallCardEvent, StackableEvent } from "@/types.ts";
 import Card from "@Components/Card.ts";
 import CardState from "@Components/card/CardState.ts";
 import MovingState from "@Components/card/states/MovingState.ts";
+import RestingState from "@Components/card/states/RestingState.ts";
+import Slot from "@Components/Slot.ts";
 
 export default class InPlayState extends CardState {
   constructor(card: Card) {
@@ -45,7 +47,23 @@ export default class InPlayState extends CardState {
     covers.dispatchEvent(new CustomEvent<StackableEvent>("card:flush:append", { detail: { card: this._card } }));
   }
 
-  onRecallCard(event: CustomEvent<RecallCardEvent>): void {}
+  onRecallCard(event: CustomEvent<RecallCardEvent>): void {
+    if (this._card.coveredBy !== null) return;
+    if (this._card.number !== event.detail.number) return;
+    if (this._card.family !== event.detail.family) return;
+
+    const destination = event.detail.caller;
+    const covers = this._card.covers
+    const origin = this._card.parentElement! as Slot;
+
+    destination.dispatchEvent(new CustomEvent<StackableEvent>("slot:push", { detail: { card: this._card } }));
+    origin.dispatchEvent(new Event("slot:pop"));
+
+    if (covers instanceof Card) covers.dispatchEvent(new Event("stackable:pop"));
+
+    this._card.covers = destination.lastElementChild as Card | null;
+    this._card.state = new RestingState(this._card);
+  }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   onAttach(_event: CustomEvent<AttachLayerEvent>): void {}
