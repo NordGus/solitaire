@@ -20,10 +20,10 @@ export default class MovingState extends CardState {
       covers.dispatchEvent(new CustomEvent<StackableEvent>("stackable:push", { detail: { card: this._card } }));
     }
 
-    if (!(covers instanceof Card)) return;
-
-    // Starts recursion to append cards in the stack that continues the flush
-    covers.dispatchEvent(new CustomEvent<StackableEvent>("card:flush:append", { detail: { card: this._card } }));
+    if (covers instanceof Card) {
+      // Starts recursion to append cards in the stack that continues the flush
+      covers.dispatchEvent(new CustomEvent<StackableEvent>("card:flush:append", { detail: { card: this._card } }));
+    }
 
     this._card.dispatchEvent(new Event("card:movement:settled", { bubbles: true }));
   }
