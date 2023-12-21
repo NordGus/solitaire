@@ -25,7 +25,7 @@ export default class MovingState extends CardState {
     // Starts recursion to append cards in the stack that continues the flush
     covers.dispatchEvent(new CustomEvent<StackableEvent>("card:flush:append", { detail: { card: this._card } }));
 
-    // TODO: dispatch card:movement:settled event
+    this._card.dispatchEvent(new Event("card:movement:settled", { bubbles: true }));
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
