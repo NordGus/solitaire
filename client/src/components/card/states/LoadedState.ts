@@ -1,4 +1,4 @@
-import { AttachLayerEvent, CardMagnetizeToEvent, CardMovedEvent, SlotStackEvent, StackableEvent } from "@/types.ts";
+import { AttachLayerEvent, SlotStackEvent, StackableEvent } from "@/types.ts";
 import Card from "@Components/Card.ts";
 import CardState from "@Components/card/CardState.ts";
 import InPlayState from "@Components/card/states/InPlayState.ts";
@@ -35,13 +35,7 @@ export default class LoadedState extends CardState {
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  onStartMovement(_event: MouseEvent): void {}
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  onMove(_event: MouseEvent): void {}
-  onStopMovement(): void {}
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  onMagnetize(_event: CustomEvent<CardMagnetizeToEvent>): void {}
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  onCardMoved(_event: CustomEvent<CardMovedEvent>): void {}
+  onDragStart(_event: DragEvent): void {}
+  onDragEnd(): void {}
   onCardMovementSettled(): void {}
 }

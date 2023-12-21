@@ -27,7 +27,7 @@ function getCardBorderColorClass(family: CardFamily): string {
   return "";
 }
 
-// TODO: Completely migrate to use draggable for the cards
+// TODO: Change how covers and coveredBy works in the new Drag and Drop API flow
 export default class Card extends HTMLElement {
   static TOP_OFFSET: number = 28;
 

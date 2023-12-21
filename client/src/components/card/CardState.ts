@@ -1,4 +1,4 @@
-import { AttachLayerEvent, CardMagnetizeToEvent, CardMovedEvent } from "@/types.ts";
+import { AttachLayerEvent } from "@/types.ts";
 import Card from "@Components/Card.ts";
 
 export default abstract class CardState {
@@ -8,11 +8,8 @@ export default abstract class CardState {
     this._card = card;
   }
 
-  abstract onStartMovement(event: MouseEvent): void;
-  abstract onMove(event: MouseEvent): void;
-  abstract onStopMovement(): void;
-  abstract onMagnetize(event: CustomEvent<CardMagnetizeToEvent>): void;
   abstract onAttach(event: CustomEvent<AttachLayerEvent>): void;
-  abstract onCardMoved(event: CustomEvent<CardMovedEvent>): void;
+  abstract onDragStart(event: DragEvent): void;
+  abstract onDragEnd(): void;
   abstract onCardMovementSettled(): void;
 }
