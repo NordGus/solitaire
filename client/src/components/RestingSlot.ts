@@ -1,4 +1,4 @@
-import { CardFamily, CardNumber, StackableEvent } from "@/types.ts";
+import { CardFamily, CardNumber, RecallCardEvent, StackableEvent } from "@/types.ts";
 import Card from "@Components/Card.ts";
 
 enum Direction {
@@ -38,6 +38,13 @@ export default class RestingSlot extends HTMLElement {
   }
 
   private onCardMovementSettled(): void {
+    if (this.childElementCount === 0) this.dispatchEvent(new CustomEvent<RecallCardEvent>(
+        "recall:card",
+        { detail: { number: this.attachableNumber, family: this.family }}
+      ));
+
+    if (this.lastElementChild === null) return;
+
     console.log(this.family, this.direction, this.lastElementChild);
   }
 

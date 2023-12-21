@@ -1,4 +1,4 @@
-import { AttachLayerEvent, CardFamily, CardNumber, StackableEvent } from "@/types.ts";
+import { AttachLayerEvent, CardFamily, CardNumber, RecallCardEvent, StackableEvent } from "@/types.ts";
 import CardState from "@Components/card/CardState.ts";
 import LoadedState from "@Components/card/states/LoadedState.ts";
 import RestingState from "@Components/card/states/RestingState.ts";
@@ -79,6 +79,7 @@ export default class Card extends HTMLElement {
     this.addEventListener("card:flush:append", this.onFlushAppend.bind(this) as EventListener);
 
     document.addEventListener("game:elements:attach:layer", this.onAttach.bind(this) as EventListener);
+    document.addEventListener("recall:card", this.onRecallCard.bind(this) as EventListener);
 
     if (this.dataset.slot) {
       this._covers = document.querySelector<Slot>(`#play-area game-slot[data-number='${this.dataset.slot}']`)!;
@@ -106,12 +107,14 @@ export default class Card extends HTMLElement {
     this.removeEventListener("card:flush:append", this.onFlushAppend.bind(this) as EventListener);
 
     document.removeEventListener("game:elements:attach:layer", this.onAttach.bind(this) as EventListener);
+    document.removeEventListener("recall:card", this.onRecallCard.bind(this) as EventListener);
   }
 
   private onDragStart(event: DragEvent): void { this._state.onDragStart(event) }
   private onDragEnd(): void { this._state.onDragEnd() }
   private onAttach(event: CustomEvent<AttachLayerEvent>): void { this._state.onAttach(event) }
   private onFlushAppend(event: CustomEvent<StackableEvent>): void { this._state.onFlushAppend(event) }
+  private onRecallCard(event: CustomEvent<RecallCardEvent>): void { this._state.onRecallCard(event) }
 
   private onPush(event: CustomEvent<StackableEvent>): void {
     if (this._coveredBy !== null) return;

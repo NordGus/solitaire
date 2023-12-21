@@ -1,4 +1,4 @@
-import { AttachLayerEvent, StackableEvent } from "@/types.ts";
+import { AttachLayerEvent, RecallCardEvent, StackableEvent } from "@/types.ts";
 import Card from "@Components/Card.ts";
 import CardState from "@Components/card/CardState.ts";
 import MovingState from "@Components/card/states/MovingState.ts";
@@ -44,6 +44,8 @@ export default class InPlayState extends CardState {
     if (covers === null) return; // breaking recursion when the stack is empty.
     covers.dispatchEvent(new CustomEvent<StackableEvent>("card:flush:append", { detail: { card: this._card } }));
   }
+
+  onRecallCard(event: CustomEvent<RecallCardEvent>): void {}
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   onAttach(_event: CustomEvent<AttachLayerEvent>): void {}
