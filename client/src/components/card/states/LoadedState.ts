@@ -11,26 +11,20 @@ export default class LoadedState extends CardState {
 
   onAttach(event: CustomEvent<AttachLayerEvent>): void {
     if (this._card.layer !== event.detail.layer) return;
+    if (this._card.covers === null) throw new Error("invalid initial state");
 
-    if (this._card.covers instanceof Slot || this._card.covers instanceof Card) {
-      this._card.style.removeProperty("left");
+    const covers = this._card.covers;
 
-      this._card.covers.dispatchEvent(new CustomEvent<SlotStackEvent>(
-        "slot:push",
-        { bubbles: true, detail: { card: this._card } }
-      ));
-    } else { // TODO: refactor to follow the standard from the slots
-      this._card.style.removeProperty("left");
-      this._card.style.removeProperty("top");
-      this._card.covers.appendChild(this._card);
-    }
+    if (covers instanceof RestingSlot) this._card.covers = null;
+    if (covers instanceof Slot) this._card.covers = null;
 
-    this._card.dispatchEvent(new CustomEvent<StackableEvent>(
-      "stackable:push",
-      { bubbles: true, detail: { stackable: this._card.covers, caller: this._card } }
-    ));
+    this._card.style.removeProperty("left");
+    this._card.style.removeProperty("top");
 
-    if (this._card.covers instanceof RestingSlot) this._card.state = new RestingState(this._card);
+    covers.dispatchEvent(new CustomEvent<SlotStackEvent>("slot:push", { bubbles: true, detail: { card: this._card } }));
+    covers.dispatchEvent(new CustomEvent<StackableEvent>("stackable:push", { detail: { stackable: covers, caller: this._card } }));
+
+    if (covers instanceof RestingSlot) this._card.state = new RestingState(this._card);
     else this._card.state = new InPlayState(this._card);
   }
 
