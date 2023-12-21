@@ -22,7 +22,7 @@ export default class InPlayState extends CardState {
   }
 
 
-  onFlushAppend(event: StackableEvent): void {
+  onFlushAppend(event: CustomEvent<StackableEvent>): void {
 
   }
 

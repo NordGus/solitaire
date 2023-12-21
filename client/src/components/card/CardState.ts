@@ -11,6 +11,6 @@ export default abstract class CardState {
   abstract onAttach(event: CustomEvent<AttachLayerEvent>): void;
   abstract onDragStart(event: DragEvent): void;
   abstract onDragEnd(): void;
-  abstract onFlushAppend(event: StackableEvent): void;
+  abstract onFlushAppend(event: CustomEvent<StackableEvent>): void;
   abstract onCardMovementSettled(): void;
 }
