@@ -6,7 +6,6 @@ import InPlayState from "@Components/card/states/InPlayState.ts";
 export default class MovingState extends CardState {
   constructor(card: Card) { super(card) }
 
-  // TODO: make the auto order feature seen in the video archive.
   onDragEnd(): void {
     const covers = this._card.covers;
     const parent = this._card.parentElement!;
@@ -14,14 +13,14 @@ export default class MovingState extends CardState {
     this._card.state = new InPlayState(this._card);
     this._card.covers = null;
 
-    if (!(covers instanceof Card)) return;
-
     if (parent.childElementCount > 1) {
       const covers = parent.children[parent.childElementCount - 2] as Card;
 
       this._card.covers = covers;
       covers.dispatchEvent(new CustomEvent<StackableEvent>("stackable:push", { detail: { card: this._card } }));
     }
+
+    if (!(covers instanceof Card)) return;
 
     // Starts recursion to append cards in the stack that continues the flush
     covers.dispatchEvent(new CustomEvent<StackableEvent>("card:flush:append", { detail: { card: this._card } }));
