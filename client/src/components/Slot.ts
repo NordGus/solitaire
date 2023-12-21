@@ -1,4 +1,4 @@
-import { SlotNumber, SlotStackEvent } from "@/types.ts";
+import { SlotNumber, StackableEvent } from "@/types.ts";
 import Card from "@Components/Card.ts";
 
 export default class Slot extends HTMLElement {
@@ -55,11 +55,11 @@ export default class Slot extends HTMLElement {
     const card = document.querySelector<Card>(`game-card[data-number='${number}'][data-family='${family}']`)!;
     const origin = card.parentElement! as Slot;
 
-    this.dispatchEvent(new CustomEvent<SlotStackEvent>("slot:push", { bubbles: true, detail: { card: card } }));
+    this.dispatchEvent(new CustomEvent<StackableEvent>("slot:push", { bubbles: true, detail: { card: card } }));
     origin.dispatchEvent(new Event("slot:pop"));
   }
 
-  private onPush(event: CustomEvent<SlotStackEvent>): void {
+  private onPush(event: CustomEvent<StackableEvent>): void {
     event.stopPropagation();
 
     this.appendChild(event.detail.card);

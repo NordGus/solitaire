@@ -1,4 +1,4 @@
-import { AttachLayerEvent, SlotStackEvent, StackableEvent } from "@/types.ts";
+import { AttachLayerEvent, StackableEvent } from "@/types.ts";
 import Card from "@Components/Card.ts";
 import CardState from "@Components/card/CardState.ts";
 import InPlayState from "@Components/card/states/InPlayState.ts";
@@ -21,8 +21,8 @@ export default class LoadedState extends CardState {
     this._card.style.removeProperty("left");
     this._card.style.removeProperty("top");
 
-    covers.dispatchEvent(new CustomEvent<SlotStackEvent>("slot:push", { bubbles: true, detail: { card: this._card } }));
-    covers.dispatchEvent(new CustomEvent<StackableEvent>("stackable:push", { detail: { stackable: covers, caller: this._card } }));
+    covers.dispatchEvent(new CustomEvent<StackableEvent>("slot:push", { bubbles: true, detail: { card: this._card } }));
+    covers.dispatchEvent(new CustomEvent<StackableEvent>("stackable:push", { detail: { card: this._card } }));
 
     if (covers instanceof RestingSlot) this._card.state = new RestingState(this._card);
     else this._card.state = new InPlayState(this._card);

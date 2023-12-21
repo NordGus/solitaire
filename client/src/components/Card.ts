@@ -75,7 +75,7 @@ export default class Card extends HTMLElement {
     this.addEventListener("dragstart", this.onDragStart.bind(this));
     this.addEventListener("dragend", this.onDragEnd.bind(this));
 
-    this.addEventListener("card:push", this.onPush.bind(this) as EventListener);
+    this.addEventListener("stackable:push", this.onPush.bind(this) as EventListener);
     this.addEventListener("stackable:pop", this.onPop.bind(this) as EventListener);
 
     document.addEventListener("card:moved:settled", this.onCardMovementSettled.bind(this) as EventListener);
@@ -117,10 +117,9 @@ export default class Card extends HTMLElement {
   private onCardMovementSettled(): void { this._state.onCardMovementSettled() }
 
   private onPush(event: CustomEvent<StackableEvent>): void {
-    if (event.detail.stackable !== this) return;
     if (this._coveredBy !== null) return;
 
-    this._coveredBy = event.detail.caller;
+    this._coveredBy = event.detail.card;
 
     if (this._state instanceof RestingState) return;
 
@@ -129,9 +128,8 @@ export default class Card extends HTMLElement {
   }
 
   private onPop(event: CustomEvent<StackableEvent>): void {
-    if (event.detail.stackable !== this) return;
     if (this._coveredBy === null) return;
-    if (event.detail.caller !== this._coveredBy) return;
+    if (event.detail.card !== this._coveredBy) return;
 
     this._coveredBy = null;
 

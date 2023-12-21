@@ -1,4 +1,4 @@
-import { CardFamily, CardNumber, SlotStackEvent } from "@/types.ts";
+import { CardFamily, CardNumber, StackableEvent } from "@/types.ts";
 import Card from "@Components/Card.ts";
 
 enum Direction {
@@ -33,7 +33,7 @@ export default class RestingSlot extends HTMLElement {
     this.addEventListener("slot:push", this.onPush.bind(this) as EventListener);
   }
 
-  private onPush(event: CustomEvent<SlotStackEvent>): void {
+  private onPush(event: CustomEvent<StackableEvent>): void {
     const card = event.detail.card;
 
     if (this.family !== card.family) return;
