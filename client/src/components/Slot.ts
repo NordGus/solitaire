@@ -1,5 +1,4 @@
-import collides from "@/helpers/collides.ts";
-import { CardMagnetizeToEvent, CardMovedEvent, SlotNumber, SlotStackEvent } from "@/types.ts";
+import { SlotNumber, SlotStackEvent } from "@/types.ts";
 import Card from "@Components/Card.ts";
 
 export default class Slot extends HTMLElement {
@@ -12,39 +11,52 @@ export default class Slot extends HTMLElement {
   }
 
   connectedCallback(): void {
+    this.addEventListener("dragenter", this.onDrag.bind(this));
+    this.addEventListener("dragover", this.onDrag.bind(this));
+    this.addEventListener("drop", this.onDrop.bind(this));
+
     this.addEventListener("slot:push", this.onPush.bind(this) as EventListener);
     this.addEventListener("slot:pop", this.onPop.bind(this));
-
-    // document.addEventListener("card:moved", this.onCardMoved.bind(this) as EventListener);
 
     this.dispatchEvent(new Event("game:element:connected", { bubbles: true }));
   }
 
   disconnectedCallback(): void {
+    this.removeEventListener("dragenter", this.onDrag.bind(this));
+    this.removeEventListener("dragover", this.onDrag.bind(this));
+    this.removeEventListener("drop", this.onDrop.bind(this));
+
     this.removeEventListener("slot:push", this.onPush.bind(this) as EventListener);
     this.removeEventListener("slot:pop", this.onPop.bind(this));
-
-    // document.removeEventListener("card:moved", this.onCardMoved.bind(this) as EventListener);
   }
 
-  private onCardMoved(event: CustomEvent<CardMovedEvent>): void {
-    if (this.coveredBy !== null) return;
+  private onDrag(event: DragEvent): void {
+    if (event.dataTransfer!.getData("family") === "") return;
+    if (event.dataTransfer!.getData("number") === "") return;
+    if (this.childElementCount === 0) { event.preventDefault(); return; }
 
-    const domRect: DOMRect = this.getBoundingClientRect();
-    const eventInitDict: CustomEventInit<CardMagnetizeToEvent> = {
-      detail: {
-        target: this,
-        card: event.detail.card,
-        state: {
-          card: { rect: event.detail.state.card.rect },
-          target: { rect: { top: domRect.top, bottom: domRect.bottom, left: domRect.left, right: domRect.right } }
-        }
-      }
-    };
+    const family = event.dataTransfer!.getData("family");
+    const number = parseInt(event.dataTransfer!.getData("number"));
+    const lastCard = this.lastElementChild as Card;
 
-    if (collides(event.detail.state.card.rect, eventInitDict.detail!.state.target.rect)) {
-      document.dispatchEvent(new CustomEvent<CardMagnetizeToEvent>("card:magnetize:to", eventInitDict));
-    }
+    if (family === lastCard.family && number === lastCard.number) return;
+    if (family === "arcana" && lastCard.family !== "arcana") return;
+    if (family !== "arcana" && lastCard.family === "arcana") return;
+    if (number === lastCard.number) return;
+    if (number - 1 > lastCard.number) return;
+    if (number + 1 < lastCard.number) return;
+
+    event.preventDefault();
+  }
+
+  private onDrop(event: DragEvent): void {
+    const family = event.dataTransfer!.getData("family");
+    const number = parseInt(event.dataTransfer!.getData("number"));
+    const card = document.querySelector<Card>(`game-card[data-number='${number}'][data-family='${family}']`)!;
+    const origin = card.parentElement! as Slot;
+
+    this.dispatchEvent(new CustomEvent<SlotStackEvent>("slot:push", { bubbles: true, detail: { card: card } }));
+    origin.dispatchEvent(new Event("slot:pop"));
   }
 
   private onPush(event: CustomEvent<SlotStackEvent>): void {
