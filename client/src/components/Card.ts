@@ -32,7 +32,7 @@ export default class Card extends HTMLElement {
   static TOP_OFFSET: number = 28;
 
   private _state: CardState
-  private _covers: Card | Slot | RestingSlot
+  private _covers: Card | Slot | RestingSlot | null
   private _coveredBy: Card | null
   private _layer: number
 
@@ -43,7 +43,7 @@ export default class Card extends HTMLElement {
     super();
 
     this._state = new LoadedState(this);
-    this._covers = this;
+    this._covers = null;
     this._coveredBy = null;
     this._layer = parseInt(this.dataset.layer!);
 
@@ -61,8 +61,8 @@ export default class Card extends HTMLElement {
   get state(): CardState { return this._state }
   set state(state: CardState) { this._state = state }
 
-  get covers(): Card | Slot | RestingSlot { return this._covers }
-  set covers(covers: Card | Slot | RestingSlot) { this._covers = covers }
+  get covers(): Card | Slot | RestingSlot | null { return this._covers }
+  set covers(covers: Card | Slot | RestingSlot | null) { this._covers = covers }
 
   get coveredBy(): Card | null { return this._coveredBy }
 
@@ -115,6 +115,7 @@ export default class Card extends HTMLElement {
   private onPush(event: CustomEvent<StackableEvent>): void {
     if (event.detail.stackable !== this) return;
     if (this._coveredBy !== null) return;
+    event.stopPropagation();
 
     this._coveredBy = event.detail.caller;
   }
@@ -123,6 +124,7 @@ export default class Card extends HTMLElement {
     if (event.detail.stackable !== this) return;
     if (this._coveredBy === null) return;
     if (event.detail.caller !== this._coveredBy) return;
+    event.stopPropagation();
 
     this._coveredBy = null;
   }
