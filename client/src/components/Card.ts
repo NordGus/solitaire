@@ -130,9 +130,8 @@ export default class Card extends HTMLElement {
     this.classList.toggle("cursor-grab", false);
   }
 
-  private onPop(event: CustomEvent<StackableEvent>): void {
+  private onPop(): void {
     if (this._coveredBy === null) return;
-    if (event.detail.card !== this._coveredBy) return;
 
     this._coveredBy = null;
 
