@@ -1,5 +1,6 @@
 import { SlotNumber, StackableEvent } from "@/types.ts";
 import Card from "@Components/Card.ts";
+import RestingSlot from "@Components/RestingSlot.ts";
 
 export default class Slot extends HTMLElement {
   public readonly number: SlotNumber
@@ -55,12 +56,38 @@ export default class Slot extends HTMLElement {
     const card = document.querySelector<Card>(`game-card[data-number='${number}'][data-family='${family}']`)!;
     const origin = card.parentElement! as Slot;
 
-    this.dispatchEvent(new CustomEvent<StackableEvent>("slot:push", { bubbles: true, detail: { card: card } }));
-    origin.dispatchEvent(new Event("slot:pop"));
+    let current: Card | null = card;
+
+    for (; current !== null;) {
+      if (current.covers instanceof Slot || current.covers instanceof RestingSlot) break;
+
+      const next: Card | null = current.covers;
+      current.covers = null
+
+      if (next !== null) next.uncover();
+      this.dispatchEvent(new CustomEvent<StackableEvent>("slot:push", { detail: { card: current } }));
+      origin.dispatchEvent(new Event("slot:pop"));
+
+      if (next === null) break;
+      if (current.family === "arcana" && next.family !== "arcana") break;
+      if (current.family !== "arcana" && next.family === "arcana") break;
+      if (current.number === next.number) break;
+      if (current.number - 1 > next.number) break;
+      if (current.number + 1 < next.number) break;
+
+      current = next;
+    }
+
+    this.dispatchEvent(new Event("card:movement:settled", { bubbles: true }));
   }
 
   private onPush(event: CustomEvent<StackableEvent>): void {
     event.stopPropagation();
+
+    if (this.lastElementChild instanceof Card) {
+      this.lastElementChild.cover(event.detail.card);
+      event.detail.card.covers = this.lastElementChild;
+    }
 
     this.appendChild(event.detail.card);
 

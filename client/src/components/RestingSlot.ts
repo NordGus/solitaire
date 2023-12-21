@@ -37,6 +37,7 @@ export default class RestingSlot extends HTMLElement {
     document.removeEventListener("card:movement:settled", this.onCardMovementSettled.bind(this));
   }
 
+  // TODO: Change Implementation
   private onCardMovementSettled(): void {
     if (this.lastElementChild === null) {
       this.dispatchEvent(new CustomEvent<RecallCardEvent>(
