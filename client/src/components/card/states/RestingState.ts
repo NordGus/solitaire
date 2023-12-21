@@ -1,4 +1,4 @@
-import { AttachLayerEvent, StackableEvent } from "@/types.ts";
+import { AttachLayerEvent, RecallCardEvent, StackableEvent } from "@/types.ts";
 import Card from "@Components/Card.ts";
 import CardState from "@Components/card/CardState.ts";
 
@@ -19,4 +19,6 @@ export default class RestingState extends CardState {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   onFlushAppend(_event: CustomEvent<StackableEvent>): void {}
   onDragEnd(): void {}
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  onRecallCard(_event: CustomEvent<RecallCardEvent>): void {}
 }
