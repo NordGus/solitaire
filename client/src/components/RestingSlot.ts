@@ -26,11 +26,19 @@ export default class RestingSlot extends HTMLElement {
   connectedCallback(): void {
     this.addEventListener("slot:push", this.onPush.bind(this) as EventListener);
 
+    document.addEventListener("card:movement:settled", this.onCardMovementSettled.bind(this));
+
     this.dispatchEvent(new Event("game:element:connected", { bubbles: true }));
   }
 
   disconnectedCallback(): void {
-    this.addEventListener("slot:push", this.onPush.bind(this) as EventListener);
+    this.removeEventListener("slot:push", this.onPush.bind(this) as EventListener);
+
+    document.removeEventListener("card:movement:settled", this.onCardMovementSettled.bind(this));
+  }
+
+  private onCardMovementSettled(): void {
+    console.log(this.family, this.direction, this.lastElementChild);
   }
 
   private onPush(event: CustomEvent<StackableEvent>): void {
