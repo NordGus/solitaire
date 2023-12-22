@@ -1,17 +1,17 @@
-/*
-GameBoard:
-  loadableElementsAmount is this number because the game needs this:
-    - 13 cards for the families cups, golds, clubs and swords.
-    - 22 cards for the arcana family.
-    - 11 play-area slots.
-    - 1 card resting slots for the cards of the families cups, golds, clubs and swords.
-    - 2 card resting slots for the arcana cards. (this to implement the double order resting).
-    - 1 out-of-play-area slot for cards to take cards.
-*/
 import { AttachLayerEvent } from "@/types.ts";
 
 export default class Board extends HTMLElement {
-  private readonly loadableElementsAmount: number = (4*13) + 22 + 11 + 4 + 2 + 1;
+  /*
+    Board.LOADABLE_ELEMENTS_AMOUNT: is equal to 92 because the game needs to load the following elements to work:
+      - 13 cards for the families cups, golds, clubs and swords.
+      - 22 cards for the arcana family.
+      - 11 play-area slots.
+      - 1 card resting slots for the cards of the families cups, golds, clubs and swords.
+      - 2 card resting slots for the arcana cards. (this to implement the double order resting).
+      - 1 out-of-play-area slot for cards to take cards.
+  */
+  static LOADABLE_ELEMENTS_AMOUNT: number = 92;
+
   private loadableElementsCount: number;
   private gameStarted: boolean;
 
@@ -35,7 +35,7 @@ export default class Board extends HTMLElement {
 
     this.loadableElementsCount++;
 
-    if (this.loadableElementsCount < this.loadableElementsAmount) return;
+    if (this.loadableElementsCount < Board.LOADABLE_ELEMENTS_AMOUNT) return;
 
     this.gameStarted = true;
 
