@@ -12,30 +12,30 @@ export default class Board extends HTMLElement {
   */
   static LOADABLE_ELEMENTS_AMOUNT: number = 92;
 
-  private loadableElementsCount: number;
-  private gameStarted: boolean;
+  private _loadableElementsCount: number;
+  private _gameStarted: boolean;
 
   constructor() {
     super();
 
-    this.gameStarted = false;
-    this.loadableElementsCount = 0;
+    this._gameStarted = false;
+    this._loadableElementsCount = 0;
   }
 
   connectedCallback(): void {
-    this.addEventListener("game:element:connected", this.onGameElementConnected.bind(this))
+    this.addEventListener("element:loaded", this.onElementLoaded.bind(this));
   }
 
   disconnectedCallback(): void {
-    this.removeEventListener("game:element:connected", this.onGameElementConnected)
+    this.removeEventListener("element:loaded", this.onElementLoaded.bind(this));
   }
 
-  private onGameElementConnected(): void {
-    if (!this.gameStarted) this.loadableElementsCount++;
-    if (this.loadableElementsCount < Board.LOADABLE_ELEMENTS_AMOUNT) return;
-    if (this.gameStarted) return;
+  private onElementLoaded(): void {
+    if (!this._gameStarted) this._loadableElementsCount++;
+    if (this._loadableElementsCount < Board.LOADABLE_ELEMENTS_AMOUNT) return;
+    if (this._gameStarted) return;
 
-    this.gameStarted = true;
+    this._gameStarted = true;
 
     for (let i = 0; i < 8; i++) {
       this.dispatchEvent(new CustomEvent<AttachLayerEvent>("attach:layer", { bubbles: true, detail: { layer: i+1 } }));

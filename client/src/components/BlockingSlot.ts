@@ -13,7 +13,7 @@ export default class BlockingSlot extends HTMLElement {
     this.addEventListener("slot:push", this.onPush.bind(this) as EventListener);
     this.addEventListener("slot:pop", this.onPop.bind(this) as EventListener);
 
-    this.dispatchEvent(new Event("game:element:connected", { bubbles: true }));
+    this.dispatchEvent(new Event("element:loaded", { bubbles: true }));
   }
 
   disconnectedCallback(): void {

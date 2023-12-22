@@ -21,7 +21,7 @@ export default class Slot extends HTMLElement {
 
     document.addEventListener("recall:cards", this.onRecallCards.bind(this) as EventListener);
 
-    this.dispatchEvent(new Event("game:element:connected", { bubbles: true }));
+    this.dispatchEvent(new Event("element:loaded", { bubbles: true }));
   }
 
   disconnectedCallback(): void {

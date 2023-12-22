@@ -81,7 +81,7 @@ export default class Card extends HTMLElement {
       this._covers = document.querySelector<RestingSlot>(`game-resting-slot[data-family='${this.family}']`)!;
     }
 
-    this.dispatchEvent(new Event("game:element:connected", { bubbles: true }));
+    this.dispatchEvent(new Event("element:loaded", { bubbles: true }));
   }
 
   disconnectedCallback(): void {

@@ -33,7 +33,7 @@ export default class RestingSlot extends HTMLElement {
     document.addEventListener("resting:disable", this.onRestingDisable.bind(this));
     document.addEventListener("card:movement:settled", this.onCardMovementSettled.bind(this));
 
-    this.dispatchEvent(new Event("game:element:connected", { bubbles: true }));
+    this.dispatchEvent(new Event("element:loaded", { bubbles: true }));
   }
 
   disconnectedCallback(): void {
