@@ -31,18 +31,14 @@ export default class Board extends HTMLElement {
   }
 
   private onGameElementConnected(): void {
-    if (this.gameStarted) return;
-
-    this.loadableElementsCount++;
-
+    if (!this.gameStarted) this.loadableElementsCount++;
     if (this.loadableElementsCount < Board.LOADABLE_ELEMENTS_AMOUNT) return;
+    if (this.gameStarted) return;
 
     this.gameStarted = true;
 
     for (let i = 0; i < 8; i++) {
-      this.dispatchEvent(new CustomEvent<AttachLayerEvent>(
-        "game:elements:attach:layer", { bubbles: true, detail: { layer: i+1 } }
-      ));
+      this.dispatchEvent(new CustomEvent<AttachLayerEvent>("attach:layer", { bubbles: true, detail: { layer: i+1 } }));
     }
   }
 }

@@ -65,7 +65,7 @@ export default class Card extends HTMLElement {
   connectedCallback(): void {
     this.addEventListener("dragstart", this.onDragStart.bind(this));
 
-    document.addEventListener("game:elements:attach:layer", this.onAttach.bind(this) as EventListener);
+    document.addEventListener("attach:layer", this.onAttach.bind(this) as EventListener);
 
     if (this.dataset.slot) {
       this._covers = document.querySelector<Slot>(`#play-area game-slot[data-number='${this.dataset.slot}']`)!;
@@ -87,7 +87,7 @@ export default class Card extends HTMLElement {
   disconnectedCallback(): void {
     this.removeEventListener("dragstart", this.onDragStart.bind(this));
 
-    document.removeEventListener("game:elements:attach:layer", this.onAttach.bind(this) as EventListener);
+    document.removeEventListener("attach:layer", this.onAttach.bind(this) as EventListener);
   }
 
   cover(): void {
