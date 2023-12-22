@@ -37,18 +37,17 @@ export default class RestingSlot extends HTMLElement {
     document.removeEventListener("card:movement:settled", this.onCardMovementSettled.bind(this));
   }
 
-  // TODO: Change Implementation
   private onCardMovementSettled(): void {
     if (this.lastElementChild === null) {
       this.dispatchEvent(new CustomEvent<RecallCardEvent>(
-        "recall:card",
+        "recall:cards",
         { bubbles: true, detail: { number: this.attachableNumber, family: this.family, caller: this } }
       ));
     } else {
       const lastCard = this.lastElementChild as Card;
 
       this.dispatchEvent(new CustomEvent<RecallCardEvent>(
-        "recall:card",
+        "recall:cards",
         { bubbles: true, detail: { number: (lastCard.number + 1), family: this.family, caller: this }}
       ));
     }
@@ -62,22 +61,24 @@ export default class RestingSlot extends HTMLElement {
 
     event.stopPropagation();
 
+    if (this.lastElementChild instanceof Card) this.lastElementChild.cover();
+
     this.appendChild(card);
+    card.rest();
     card.style.removeProperty("left");
     card.style.removeProperty("top");
     card.layer = this.childElementCount;
+    event.detail.card.style.zIndex = `${event.detail.card.layer}`;
 
     if (this.direction === "prograde") this.onPushPrograde(card);
     else this.onPushRetrograde(card);
   }
 
-  // TODO: implement recursive call to call other restable cards
   private onPushPrograde(card: Card): void {
     if (this.family === "arcana") card.style.left = `${RestingSlot.LEFT_OFFSET * (card.layer - 1)}px`;
     else card.style.bottom = `${RestingSlot.BOTTOM_OFFSET * (card.layer - 1)}px`;
   }
 
-  // TODO: implement recursive call to call other restable cards
   private onPushRetrograde(card: Card): void {
     if (this.family === "arcana") card.style.right = `${RestingSlot.RIGHT_OFFSET * (card.layer - 1)}px`;
     else card.style.bottom = `${RestingSlot.BOTTOM_OFFSET * (card.layer - 1)}px`;

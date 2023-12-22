@@ -1,6 +1,5 @@
-import { SlotNumber, StackableEvent } from "@/types.ts";
+import { RecallCardEvent, SlotNumber, StackableEvent } from "@/types.ts";
 import Card from "@Components/Card.ts";
-import RestingSlot from "@Components/RestingSlot.ts";
 
 export default class Slot extends HTMLElement {
   public readonly number: SlotNumber
@@ -19,6 +18,8 @@ export default class Slot extends HTMLElement {
     this.addEventListener("slot:push", this.onPush.bind(this) as EventListener);
     this.addEventListener("slot:pop", this.onPop.bind(this));
 
+    document.addEventListener("recall:cards", this.onRecallCards.bind(this) as EventListener);
+
     this.dispatchEvent(new Event("game:element:connected", { bubbles: true }));
   }
 
@@ -29,6 +30,8 @@ export default class Slot extends HTMLElement {
 
     this.removeEventListener("slot:push", this.onPush.bind(this) as EventListener);
     this.removeEventListener("slot:pop", this.onPop.bind(this));
+
+    document.removeEventListener("recall:cards", this.onRecallCards.bind(this) as EventListener);
   }
 
   private onDrag(event: DragEvent): void {
@@ -59,14 +62,10 @@ export default class Slot extends HTMLElement {
     let current: Card | null = card;
 
     for (; current !== null;) {
-      if (current.covers instanceof Slot || current.covers instanceof RestingSlot) break;
-
-      const next: Card | null = current.covers;
-      current.covers = null
-
-      if (next !== null) next.uncover();
       this.dispatchEvent(new CustomEvent<StackableEvent>("slot:push", { detail: { card: current } }));
       origin.dispatchEvent(new Event("slot:pop"));
+
+      const next = origin.lastElementChild as Card | null;
 
       if (next === null) break;
       if (current.family === "arcana" && next.family !== "arcana") break;
@@ -81,23 +80,38 @@ export default class Slot extends HTMLElement {
     this.dispatchEvent(new Event("card:movement:settled", { bubbles: true }));
   }
 
+  private onRecallCards(event: CustomEvent<RecallCardEvent>): void {
+    if (this.childElementCount === 0) return;
+
+    const top = this.lastElementChild as Card;
+
+    if (top.number !== event.detail.number) return;
+    if (top.family !== event.detail.family) return;
+
+    event.detail.caller.dispatchEvent(new CustomEvent<StackableEvent>("slot:push", { detail: { card: top } }));
+    this.dispatchEvent(new Event("slot:pop"));
+
+    if (this.lastElementChild instanceof Card) this.lastElementChild.uncover();
+
+    this.dispatchEvent(new Event("card:movement:settled", { bubbles: true }));
+  }
+
   private onPush(event: CustomEvent<StackableEvent>): void {
     event.stopPropagation();
 
-    if (this.lastElementChild instanceof Card) {
-      this.lastElementChild.cover(event.detail.card);
-      event.detail.card.covers = this.lastElementChild;
-    }
+    if (this.lastElementChild instanceof Card) this.lastElementChild.cover();
 
     this.appendChild(event.detail.card);
 
     event.detail.card.layer = this.childElementCount;
     event.detail.card.style.top = `${Card.TOP_OFFSET * (event.detail.card.layer - 1)}px`;
+    event.detail.card.style.zIndex = `${event.detail.card.layer}`;
 
     this.resize();
   }
 
   private onPop(): void {
+    if (this.lastElementChild instanceof Card) this.lastElementChild.uncover();
     this.resize();
   }
 

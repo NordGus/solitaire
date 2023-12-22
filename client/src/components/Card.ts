@@ -36,9 +36,7 @@ export default class Card extends HTMLElement {
 
   private _state: State
   private _covers: Card | Slot | RestingSlot | null
-  private _coveredBy: Card | null
   private _layer: number
-
 
   public readonly number: CardNumber
   public readonly family: CardFamily
@@ -48,7 +46,6 @@ export default class Card extends HTMLElement {
 
     this._state = State.Connected;
     this._covers = null;
-    this._coveredBy = null;
     this._layer = parseInt(this.dataset.layer!);
 
     this.number = parseInt(this.dataset.number!) as CardNumber;
@@ -61,9 +58,6 @@ export default class Card extends HTMLElement {
     this.style.top = "5rem";
     this.style.left = `${(this.parentElement!.offsetWidth - this.offsetWidth)/2}px`;
   }
-
-  get covers(): Card | Slot | RestingSlot | null { return this._covers }
-  set covers(covers: Card | null) { this._covers = covers }
 
   get layer(): number { return this._layer }
   set layer(layer: number) { this._layer = layer }
@@ -96,36 +90,29 @@ export default class Card extends HTMLElement {
     document.removeEventListener("game:elements:attach:layer", this.onAttach.bind(this) as EventListener);
   }
 
-  cover(by: Card | null): boolean {
-    if (this._coveredBy !== null) return false;
-
-    this._coveredBy = by;
-
-    if (this._state === State.Resting) return true;
+  cover(): void {
+    if (this._state === State.Resting) return;
 
     this.setAttribute("draggable", "false");
     this.classList.toggle("cursor-grab", false);
-
-    return true
   }
 
-  uncover(): Card | null {
-    if (this._coveredBy === null) return null;
-
-    const coveredBy = this._coveredBy;
-    this._coveredBy = null;
-
-    if (this._state === State.Resting) return coveredBy;
+  uncover(): void {
+    if (this._state === State.Resting) return;
 
     this.setAttribute("draggable", "true");
     this.classList.toggle("cursor-grab", true);
+  }
 
-    return coveredBy
+  rest(): void {
+    if (this._state === State.Resting) return;
+
+    this.cover();
+    this._state = State.Resting;
   }
 
   private onDragStart(event: DragEvent): void {
     if (this._state !== State.InPlay) return;
-    if (this._coveredBy !== null) return;
 
     const transfer = event.dataTransfer!;
 
@@ -140,11 +127,10 @@ export default class Card extends HTMLElement {
 
     const covers = this._covers;
 
-    this.style.removeProperty("left");
-    this.style.removeProperty("top");
-
     this._covers = null;
     this._state = covers instanceof RestingSlot ? State.Resting : State.InPlay;
+    this.style.removeProperty("left");
+    this.style.removeProperty("top");
 
     covers.dispatchEvent(new CustomEvent<StackableEvent>("slot:push", { bubbles: true, detail: { card: this } }));
   }
