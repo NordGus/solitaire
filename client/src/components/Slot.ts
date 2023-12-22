@@ -71,8 +71,7 @@ export default class Slot extends HTMLElement {
       const next = origin.lastElementChild as Card | null;
 
       if (next === null) break;
-      if (current.family === "arcana" && next.family !== "arcana") break;
-      if (current.family !== "arcana" && next.family === "arcana") break;
+      if (current.family !== next.family) break;
       if (current.number === next.number) break;
       if (current.number - 1 > next.number) break;
       if (current.number + 1 < next.number) break;

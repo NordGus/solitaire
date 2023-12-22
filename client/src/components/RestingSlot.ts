@@ -7,9 +7,9 @@ enum Direction {
 }
 
 export default class RestingSlot extends HTMLElement {
-  static LEFT_OFFSET = 10;
-  static RIGHT_OFFSET = 10;
-  static BOTTOM_OFFSET = 3;
+  static LEFT_OFFSET = 20;
+  static RIGHT_OFFSET = 20;
+  static BOTTOM_OFFSET = 1;
 
   private readonly _attachableNumber: CardNumber
   private readonly _direction: Direction
