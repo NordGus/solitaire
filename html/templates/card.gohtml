@@ -1,6 +1,6 @@
 {{ define "card" }}
     <game-card
-            class="grid grid-cols-1 grid-rows-card absolute w-[7rem] h-[12.5rem] p-1 cursor-grab rounded border-[1px] border-b-[2px] shadow-[0_2px_1px_rgba(0,0,0,1)]"
+            class="flex flex-col absolute w-[7rem] h-[12.5rem] p-[2px] rounded-sm cursor-grab rounded-b border-b-[1px] shadow-[0_2px_1px_rgba(0,0,0,1)]"
             data-number="{{ .Card.Number }}"
             data-family="{{ .Card.Family }}"
             data-layer="{{ .Layer }}"
@@ -14,16 +14,18 @@
         {{ end }}
             draggable="true"
     >
-    {{ if eq .Card.Family "arcana" }}
-        <span class="block text-center text-xl font-black leading-none">
-            {{ parseCardNumber .Card.Number .Card.Family }}
-        </span>
-    {{ else }}
-        <div class="flex justify-start items-center gap-1 text-xl font-medium leading-none">
-            <span>{{ parseCardNumber .Card.Number .Card.Family }}</span>
-            <span>{{ .Card.Family }}</span>
+        <div class="flex-1 grid grid-cols-1 grid-rows-card p-0.5 rounded w-full h-full card-body">
+            {{ if eq .Card.Family "arcana" }}
+            <span class="block text-center text-xl font-black leading-none">
+                {{ parseCardNumber .Card.Number .Card.Family }}
+            </span>
+            {{ else }}
+            <div class="flex justify-start items-center gap-1 text-xl font-medium leading-none">
+                <span>{{ parseCardNumber .Card.Number .Card.Family }}</span>
+                <span>{{ .Card.Family }}</span>
+            </div>
+            {{ end }}
+            <span class="block w-full h-full"></span>
         </div>
-    {{ end }}
-        <span class="w-full h-full"></span>
     </game-card>
 {{ end }}

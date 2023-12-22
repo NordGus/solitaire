@@ -78,11 +78,14 @@ export default class RestingSlot extends HTMLElement {
 
     this.appendChild(card);
     card.rest();
-    if (this.childElementCount > 1)event.detail.card.classList.toggle("shadow-[0_2px_1px_rgba(0,0,0,1)]", false);
     card.style.removeProperty("left");
     card.style.removeProperty("top");
     card.layer = this.childElementCount;
     event.detail.card.style.zIndex = `${event.detail.card.layer}`;
+
+    if (this.childElementCount > 1 && this._family !== "arcana") {
+      event.detail.card.classList.toggle("shadow-[0_2px_1px_rgba(0,0,0,1)]", false);
+    }
 
     if (this._direction === "prograde") this.onPushPrograde(card);
     else this.onPushRetrograde(card);

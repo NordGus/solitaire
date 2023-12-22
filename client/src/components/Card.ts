@@ -3,6 +3,15 @@ import RestingSlot from "@Components/RestingSlot.ts";
 import Slot from "@Components/Slot.ts";
 
 function getCardBackgroundColorClass(family: CardFamily): string {
+  if (family === "swords") return "bg-blue-700";
+  if (family === "clubs") return "bg-green-600";
+  if (family === "golds") return "bg-yellow-600";
+  if (family === "cups") return "bg-red-700";
+  if (family === "arcana") return "bg-amber-600";
+  return "";
+}
+
+function getCardBodyBackgroundColorClass(family: CardFamily): string {
   if (family === "arcana") return "bg-gray-900";
   return "bg-amber-100";
 }
@@ -17,11 +26,11 @@ function getCardTextColorClass(family: CardFamily): string {
 }
 
 function getCardBorderColorClass(family: CardFamily): string {
-  if (family === "swords") return "border-blue-700";
-  if (family === "clubs") return "border-green-600";
-  if (family === "golds") return "border-yellow-600";
-  if (family === "cups") return "border-red-700";
-  if (family === "arcana") return "border-amber-600";
+  if (family === "swords") return "border-blue-800";
+  if (family === "clubs") return "border-green-700";
+  if (family === "golds") return "border-yellow-700";
+  if (family === "cups") return "border-red-800";
+  if (family === "arcana") return "border-amber-700";
   return "";
 }
 
@@ -32,7 +41,7 @@ enum State {
 }
 
 export default class Card extends HTMLElement {
-  static TOP_OFFSET: number = 28;
+  static TOP_OFFSET: number = 26;
 
   private _state: State
   private _covers: Card | Slot | RestingSlot | null
@@ -54,6 +63,7 @@ export default class Card extends HTMLElement {
     this.classList.toggle(getCardBackgroundColorClass(this.family), true);
     this.classList.toggle(getCardTextColorClass(this.family), true);
     this.classList.toggle(getCardBorderColorClass(this.family), true);
+    this.querySelector(".card-body")!.classList.toggle(getCardBodyBackgroundColorClass(this.family), true);
 
     this.style.top = "5rem";
     this.style.left = `${(this.parentElement!.offsetWidth - this.offsetWidth)/2}px`;
