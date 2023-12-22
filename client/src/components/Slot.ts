@@ -1,4 +1,5 @@
 import { RecallCardEvent, SlotNumber, StackableEvent } from "@/types.ts";
+import BlockingSlot from "@Components/BlockingSlot.ts";
 import Card from "@Components/Card.ts";
 
 export default class Slot extends HTMLElement {
@@ -57,13 +58,15 @@ export default class Slot extends HTMLElement {
     const family = event.dataTransfer!.getData("family");
     const number = parseInt(event.dataTransfer!.getData("number"));
     const card = document.querySelector<Card>(`game-card[data-number='${number}'][data-family='${family}']`)!;
-    const origin = card.parentElement! as Slot;
+    const origin = card.parentElement! as Slot | BlockingSlot;
 
     let current: Card | null = card;
 
     for (; current !== null;) {
       this.dispatchEvent(new CustomEvent<StackableEvent>("slot:push", { detail: { card: current } }));
       origin.dispatchEvent(new Event("slot:pop"));
+
+      if (origin instanceof BlockingSlot) break;
 
       const next = origin.lastElementChild as Card | null;
 
@@ -102,6 +105,10 @@ export default class Slot extends HTMLElement {
     if (this.lastElementChild instanceof Card) this.lastElementChild.cover();
 
     this.appendChild(event.detail.card);
+
+    event.detail.card.style.removeProperty("transform");
+    event.detail.card.classList.toggle("shadow-[0_2px_1px_rgba(0,0,0,1)]", true);
+    event.detail.card.classList.toggle("shadow-[2px_0_1px_rgba(0,0,0,1)]", false);
 
     event.detail.card.layer = this.childElementCount;
     event.detail.card.style.top = `${Card.TOP_OFFSET * (event.detail.card.layer - 1)}px`;

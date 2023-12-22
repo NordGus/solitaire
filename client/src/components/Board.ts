@@ -1,4 +1,3 @@
-
 /*
 GameBoard:
   loadableElementsAmount is this number because the game needs this:
@@ -12,7 +11,7 @@ GameBoard:
 import { AttachLayerEvent } from "@/types.ts";
 
 export default class Board extends HTMLElement {
-  private readonly loadableElementsAmount: number = (4*13) + 22 + 11 + 4 + 2;
+  private readonly loadableElementsAmount: number = (4*13) + 22 + 11 + 4 + 2 + 1;
   private loadableElementsCount: number;
   private gameStarted: boolean;
 

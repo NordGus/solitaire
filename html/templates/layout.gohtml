@@ -18,10 +18,13 @@
                         {{ end }}
                     </div>
                     <div class="w-[20rem]"></div>
-                    <div class="flex-1 flex justify-between items-center py-[0.5rem] px-[3.5rem] rounded-tr-lg">
+                    <div class="flex-1 relative flex justify-between items-center py-[0.5rem] px-[3.5rem] rounded-tr-lg">
                         {{ range .FamilyRestingSlots }}
                             {{ template "resting_slot" . }}
                         {{ end }}
+                        <game-blocking-slot
+                                class="absolute top-0 left-0 bottom-0 right-0 flex justify-center items-center z-30"
+                        ></game-blocking-slot>
                     </div>
                 </div>
                 <div id="play-area" class="flex m-0 p-4 flex-1 justify-between items-start rounded-b-lg bg-red-950 shadow-inner">
