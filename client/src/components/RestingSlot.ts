@@ -50,19 +50,18 @@ export default class RestingSlot extends HTMLElement {
   private onCardMovementSettled(): void {
     if (this._disabled) return;
 
-    if (this.lastElementChild === null) {
-      this.dispatchEvent(new CustomEvent<RecallCardEvent>(
-        "recall:cards",
-        { bubbles: true, detail: { number: this._attachableNumber, family: this._family, caller: this } }
-      ));
-    } else {
-      const lastCard = this.lastElementChild as Card;
+    const eventInitDict: CustomEventInit<RecallCardEvent> = {
+      bubbles: true,
+      detail: { number: this._attachableNumber, family: this._family, caller: this }
+    };
 
-      this.dispatchEvent(new CustomEvent<RecallCardEvent>(
-        "recall:cards",
-        { bubbles: true, detail: { number: (lastCard.number + 1), family: this._family, caller: this }}
-      ));
+    if (this.lastElementChild instanceof Card && this._direction === "prograde") {
+      eventInitDict.detail!.number = this.lastElementChild.number + 1;
+    } else if (this.lastElementChild instanceof Card) {
+      eventInitDict.detail!.number = this.lastElementChild.number - 1;
     }
+
+    this.dispatchEvent(new CustomEvent<RecallCardEvent>("recall:cards", eventInitDict));
   }
 
   private onPush(event: CustomEvent<StackableEvent>): void {
@@ -79,6 +78,7 @@ export default class RestingSlot extends HTMLElement {
 
     this.appendChild(card);
     card.rest();
+    if (this.childElementCount > 1)event.detail.card.classList.toggle("shadow-[0_2px_1px_rgba(0,0,0,1)]", false);
     card.style.removeProperty("left");
     card.style.removeProperty("top");
     card.layer = this.childElementCount;
