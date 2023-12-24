@@ -11,4 +11,5 @@ const (
 type Card struct {
 	Number uint8
 	Family string
+	Name   string
 }
