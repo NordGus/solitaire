@@ -41,7 +41,7 @@ enum State {
 }
 
 export default class Card extends HTMLElement {
-  static TOP_OFFSET: number = 26;
+  static TOP_OFFSET: number = 34;
 
   private _state: State
   private _covers: Card | Slot | RestingSlot | null
