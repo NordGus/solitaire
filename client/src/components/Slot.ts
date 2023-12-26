@@ -107,7 +107,7 @@ export default class Slot extends HTMLElement {
 
     event.detail.card.style.removeProperty("transform");
     event.detail.card.classList.toggle("shadow-[0_2px_1px_rgba(0,0,0,1)]", true);
-    event.detail.card.classList.toggle("shadow-[2px_0_1px_rgba(0,0,0,1)]", false);
+    event.detail.card.classList.toggle("shadow-[-2px_0_1px_rgba(0,0,0,1)]", false);
 
     event.detail.card.layer = this.childElementCount;
     event.detail.card.style.top = `${Card.TOP_OFFSET * (event.detail.card.layer - 1)}px`;
