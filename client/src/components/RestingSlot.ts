@@ -7,9 +7,8 @@ enum Direction {
 }
 
 export default class RestingSlot extends HTMLElement {
-  static LEFT_OFFSET = 20;
-  static RIGHT_OFFSET = 20;
-  static BOTTOM_OFFSET = 1;
+  static X_OFFSET = 20;
+  static Y_OFFSET = 1;
 
   private readonly _attachableNumber: CardNumber
   private readonly _direction: Direction
@@ -66,40 +65,27 @@ export default class RestingSlot extends HTMLElement {
 
   private onPush(event: CustomEvent<StackableEvent>): void {
     if (this._disabled) return;
+    if (this._family !== event.detail.card.family) return;
+    if (this.childElementCount === 0 && event.detail.card.number !== this._attachableNumber) throw new Error("invalid game state");
+    event.stopPropagation();
 
     const card = event.detail.card;
 
-    if (this._family !== card.family) return;
-    if (this.childElementCount === 0 && card.number !== this._attachableNumber) throw new Error("invalid game state");
-
-    event.stopPropagation();
-
-    if (this.lastElementChild instanceof Card) this.lastElementChild.cover();
-
-    this.appendChild(card);
+    if (this.canRemoveCardShadow()) card.classList.toggle("shadow-[0_2px_1px_rgba(0,0,0,1)]", false);
     card.rest();
-    card.style.removeProperty("left");
-    card.style.removeProperty("top");
+    this.appendChild(card);
     card.layer = this.childElementCount;
-    event.detail.card.style.zIndex = `${event.detail.card.layer}`;
+    card.style.zIndex = `${event.detail.card.layer}`;
 
-    if (this.childElementCount > 1 && this._family !== "arcana") {
-      event.detail.card.classList.toggle("shadow-[0_2px_1px_rgba(0,0,0,1)]", false);
-    }
-
-    if (this._direction === "prograde") this.onPushPrograde(card);
-    else this.onPushRetrograde(card);
+    if (this._direction === "prograde" && this._family === "arcana")
+      card.style.transform = `translateX(${RestingSlot.X_OFFSET * (card.layer - 1)}px)`;
+    else if (this._family === "arcana")
+      card.style.transform = `translateX(${-RestingSlot.X_OFFSET * (card.layer - 1)}px)`;
+    else
+      card.style.transform = `translateY(${-RestingSlot.Y_OFFSET * (card.layer - 1)}px)`;
   }
 
-  private onPushPrograde(card: Card): void {
-    if (this._family === "arcana") card.style.left = `${RestingSlot.LEFT_OFFSET * (card.layer - 1)}px`;
-    else card.style.bottom = `${RestingSlot.BOTTOM_OFFSET * (card.layer - 1)}px`;
-  }
-
-  private onPushRetrograde(card: Card): void {
-    if (this._family === "arcana") card.style.right = `${RestingSlot.RIGHT_OFFSET * (card.layer - 1)}px`;
-    else card.style.bottom = `${RestingSlot.BOTTOM_OFFSET * (card.layer - 1)}px`;
-  }
+  private canRemoveCardShadow(): boolean { return this.childElementCount > 1 && this._family !== "arcana" }
 }
 
 customElements.define("game-resting-slot", RestingSlot)

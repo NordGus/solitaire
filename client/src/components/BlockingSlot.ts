@@ -44,9 +44,6 @@ export default class BlockingSlot extends HTMLElement {
 
     this.appendChild(event.detail.card);
 
-    event.detail.card.style.removeProperty("top");
-    event.detail.card.style.removeProperty("left");
-
     event.detail.card.classList.toggle("shadow-[0_2px_1px_rgba(0,0,0,1)]", false);
     event.detail.card.classList.toggle("shadow-[-2px_0_1px_rgba(0,0,0,1)]", true);
 
