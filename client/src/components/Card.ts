@@ -44,7 +44,6 @@ export default class Card extends HTMLElement {
   static TOP_OFFSET: number = 34;
 
   private _state: State
-  private _covers: Card | Slot | RestingSlot | null
   private _layer: number
 
   public readonly number: CardNumber
@@ -54,7 +53,6 @@ export default class Card extends HTMLElement {
     super();
 
     this._state = State.Connected;
-    this._covers = null;
     this._layer = parseInt(this.dataset.layer!);
 
     this.number = parseInt(this.dataset.number!) as CardNumber;
@@ -63,7 +61,7 @@ export default class Card extends HTMLElement {
     this.classList.toggle(getCardBackgroundColorClass(this.family), true);
     this.classList.toggle(getCardTextColorClass(this.family), true);
     this.classList.toggle(getCardBorderColorClass(this.family), true);
-    this.querySelector(".card-body")!.classList.toggle(getCardBodyBackgroundColorClass(this.family), true);
+    this.firstElementChild!.classList.toggle(getCardBodyBackgroundColorClass(this.family), true);
 
     this.style.top = "5rem";
     this.style.left = `${(this.parentElement!.offsetWidth - this.offsetWidth)/2}px`;
@@ -76,20 +74,6 @@ export default class Card extends HTMLElement {
     this.addEventListener("dragstart", this.onDragStart.bind(this));
 
     document.addEventListener("attach:layer", this.onAttach.bind(this) as EventListener);
-
-    if (this.dataset.slot) {
-      this._covers = document.querySelector<Slot>(`#play-area game-slot[data-number='${this.dataset.slot}']`)!;
-    }
-
-    if (this.dataset.attachNumber && this.dataset.attachFamily) {
-      this._covers = document.querySelector<Card>(
-        `game-card[data-number='${this.dataset.attachNumber}'][data-family='${this.dataset.attachFamily}']`
-      )!;
-    }
-
-    if (this.dataset.isResting) {
-      this._covers = document.querySelector<RestingSlot>(`game-resting-slot[data-family='${this.family}']`)!;
-    }
 
     this.dispatchEvent(new Event("element:loaded", { bubbles: true }));
   }
@@ -104,14 +88,14 @@ export default class Card extends HTMLElement {
     if (this._state === State.Resting) return;
 
     this.setAttribute("draggable", "false");
-    this.classList.toggle("cursor-grab", false);
+    this.classList.toggle("hover:cursor-grab", false);
   }
 
   uncover(): void {
     if (this._state === State.Resting) return;
 
     this.setAttribute("draggable", "true");
-    this.classList.toggle("cursor-grab", true);
+    this.classList.toggle("hover:cursor-grab", true);
   }
 
   rest(): void {
@@ -119,6 +103,11 @@ export default class Card extends HTMLElement {
 
     this.cover();
     this._state = State.Resting;
+  }
+
+  get stack(): Slot | RestingSlot {
+    if (this._state === State.Resting) return this.parentElement! as RestingSlot;
+    else return this.parentElement! as Slot;
   }
 
   private onDragStart(event: DragEvent): void {
@@ -133,16 +122,35 @@ export default class Card extends HTMLElement {
   private onAttach(event: CustomEvent<AttachLayerEvent>): void {
     if (this._state !== State.Connected) return;
     if (this._layer !== event.detail.layer) return;
-    if (this._covers === null) throw new Error("invalid initial state");
 
-    const covers = this._covers;
+    const covers = this.getElementCoveredByCard();
 
-    this._covers = null;
+    if (covers === null) throw new Error("invalid initial state");
+
     this._state = covers instanceof RestingSlot ? State.Resting : State.InPlay;
     this.style.removeProperty("left");
     this.style.removeProperty("top");
 
     covers.dispatchEvent(new CustomEvent<StackableEvent>("slot:push", { bubbles: true, detail: { card: this } }));
+  }
+
+  private getElementCoveredByCard(): Card | Slot | RestingSlot | null {
+    if (this._state !== State.Connected) return null;
+
+    if (this.dataset.slot)
+      return document.querySelector<Slot>(
+        `#play-area game-slot[data-number='${this.dataset.slot}']`
+      );
+    if (this.dataset.attachNumber && this.dataset.attachFamily)
+      return document.querySelector<Card>(
+        `game-card[data-number='${this.dataset.attachNumber}'][data-family='${this.dataset.attachFamily}']`
+      );
+    if (this.dataset.isResting)
+      return document.querySelector<RestingSlot>(
+        `game-resting-slot[data-family='${this.family}'][data-attachable='${this.number}']`
+      );
+
+    return null;
   }
 }
 
