@@ -7,6 +7,7 @@ ARG NODE_VERSION
 
 FROM node:${NODE_VERSION}-alpine${ALPINE_VERSION} as node
 FROM golang:${GO_VERSION}-alpine${ALPINE_VERSION}
+ARG NPM_VERSION=latest
 ARG GO_AIR_VERSION
 ARG USERNAME=vscode
 ARG USER_UID=1000
@@ -29,8 +30,11 @@ RUN adduser $USERNAME -s /bin/sh -D -u $USER_UID $USER_GID && \
 # install packages
 RUN apk add -q --update --progress --no-cache git sudo openssh-client zsh nano
 
+# updating npm
+RUN npm install -g npm@$NPM_VERSION
+
 # installing cosmtrek/air for hot reloading
-RUN go install github.com/cosmtrek/air@$GO_AIR_VERSION
+RUN go install github.com/air-verse/air@$GO_AIR_VERSION
 
 # Setup shell
 USER $USERNAME
@@ -48,3 +52,4 @@ RUN echo 'ZSH_THEME="robbyrussell"' >> "/home/$USERNAME/.zshrc" \
 RUN echo "exec `which zsh`" > "/home/$USERNAME/.ashrc"
 
 USER root
+RUN chmod -R a+w /go/pkg

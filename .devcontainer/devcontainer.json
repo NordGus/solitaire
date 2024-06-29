@@ -1,14 +1,10 @@
 {
-  "name": "Solitaire",
-  "build": {
-    "args": {
-      "GO_VERSION": "1.21.5",
-      "ALPINE_VERSION": "3.18",
-      "NODE_VERSION": "20.10",
-      "GO_AIR_VERSION": "v1.49.0"
-    },
-    "dockerfile": "devcontainer.Dockerfile"
-  },
+  "name": "Tarot Solitaire",
+  "dockerComposeFile": "../docker-compose.yml",
+  "service": "devcontainer",
+  "workspaceFolder": "/tarot-solitaire",
+  "shutdownAction": "stopCompose",
+  "remoteUser": "vscode",
   "customizations": {
     "vscode": {
       "extensions": [
@@ -20,20 +16,51 @@
         "donjayamanne.githistory",
         "streetsidesoftware.code-spell-checker",
         "alexcvzz.vscode-sqlite",
-        "bradlc.vscode-tailwindcss"
+        "bradlc.vscode-tailwindcss",
+        "Catppuccin.catppuccin-vsc",
+        "Catppuccin.catppuccin-vsc-icons",
+        "bierner.markdown-preview-github-styles",
+        "bierner.github-markdown-preview",
+        "bierner.markdown-mermaid",
+        "mhutchie.git-graph",
+        "firefox-devtools.vscode-firefox-debug",
+        "tamasfe.even-better-toml"
       ],
       "settings": {
-        "go.useLanguageServer": true
+        "go.useLanguageServer": true,
+        "workbench.colorTheme": "Catppuccin Mocha",
+        "workbench.iconTheme": "catppuccin-mocha",
+        "editor.rulers": [
+          100
+        ],
+        "editor.wordWrap": "wordWrapColumn",
+        "editor.wordWrapColumn": 100,
+        "editor.formatOnSave": true,
+        "editor.fontSize": 16,
+        "editor.fontFamily": "'Geist Mono Medium'",
+        "editor.fontLigatures": true,
+        "editor.quickSuggestions": {
+          "other": "on",
+          "comments": "off",
+          "strings": "on"
+        },
+        "files.associations": {
+          "*.css": "tailwindcss"
+        },
+        "terminal.integrated.fontSize": 16,
+        "chat.editor.fontSize": 16,
+        "markdown.preview.fontFamily": "'Geist Mono Medium'",
+        "markdown.preview.fontSize": 16,
+        "markdown.preview.lineHeight": 1.1,
+        "gopls": {
+          "ui.semanticTokens": true
+        }
       }
     }
   },
-  "capAdd": ["SYS_PTRACE"],
-  "securityOpt": ["seccomp=unconfined"],
-  "containerUser": "vscode",
-  "mounts": [{ "source": "${env:HOME}/.ssh", "target": "/home/vscode/.ssh:ro", "type": "bind" }],
-  "forwardPorts": [4269, 5173],
+  "forwardPorts": [3000, 5173],
   "portsAttributes": {
-    "4269": {
+    "3000": {
       "label": "Go Server entrypoint",
       "onAutoForward": "notify",
       "requireLocalPort": true
@@ -44,8 +71,8 @@
       "requireLocalPort": true
     }
   },
-  "postCreateCommand": {
-    "go:dependencies": "sudo chmod -R a+w /go/pkg && go mod download",
+  "postStartCommand": {
+    "go:dependencies": "go mod download",
     "npm:dependencies": "npm install"
   }
 }

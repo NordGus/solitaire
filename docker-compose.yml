@@ -1,0 +1,23 @@
+name: "tarot-solitaire"
+
+services:
+  devcontainer:
+    build:
+      dockerfile: .devcontainer/devcontainer.Dockerfile
+      context: .
+      args:
+        GO_VERSION: "1.22.4"
+        ALPINE_VERSION: "3.19"
+        NODE_VERSION: "22"
+        GO_AIR_VERSION: "v1.52.3"
+    user: vscode
+    env_file: .env
+    volumes:
+      - .:/tarot-solitaire:cached
+      - ${HOME}/.ssh:/home/vscode/.ssh:ro
+      - ${HOME}/.gitconfig:/home/vscode/.gitconfig:ro
+    cap_add:
+      - SYS_PTRACE
+    security_opt:
+      - seccomp:unconfined
+    command: /bin/sh -c "while sleep 1000; do :; done"
