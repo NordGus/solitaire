@@ -1,15 +1,20 @@
 package main
 
 import (
+	"fmt"
+	"log"
+	"net/http"
+	"os"
+
 	"github.com/NordGus/solitaire/html"
 	"github.com/NordGus/solitaire/staticfileserver"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
-	"log"
-	"net/http"
 )
 
 func main() {
+	port := os.Getenv("PORT")
+
 	htmlApp, err := html.New()
 	if err != nil {
 		log.Fatalln(err)
@@ -27,7 +32,7 @@ func main() {
 	htmlApp.Routes(router)
 	statictfileserverApp.Routes(router)
 
-	err = http.ListenAndServe(":4269", router)
+	err = http.ListenAndServe(fmt.Sprintf(":%v", port), router)
 	if err != nil {
 		log.Fatalf("something went wrong initalizing http server: %v\n", err)
 	}
