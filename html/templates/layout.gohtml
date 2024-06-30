@@ -9,8 +9,8 @@
 
             <title>ROM-Stack</title>
         </head>
-        <body class="m-0 p-0 flex flex-col justify-center items-center h-[100vh] bg-neutral-200 dark:bg-neutral-800 text-neutral-900 dark:text-neutral-100">
-            <game-board class="flex flex-col gap-1 m-0 p-2 relative w-full h-full bg-amber-700">
+        <body class="m-0 p-0 flex flex-col justify-center items-center min-h-[100vh] bg-neutral-200 dark:bg-neutral-800 text-neutral-900 dark:text-neutral-100">
+            <game-board class="flex flex-col gap-1 m-0 p-2 relative w-full min-h-[100vh] bg-amber-700">
                 <div id="resting-area" class="flex gap-1 justify-between max-h-[15vw] rounded-t-lg bg-red-900">
                     <div class="flex-1 flex justify-between items-center py-[0.5rem] px-[3.5rem] rounded-tl-lg">
                         {{ range .ArcanaRestingSlots }}
@@ -27,7 +27,7 @@
                         ></game-blocking-slot>
                     </div>
                 </div>
-                <div id="play-area" class="flex m-0 p-4 flex-1 justify-between items-start rounded-b-lg bg-red-950 shadow-inner">
+                <div id="play-area" class="flex m-0 p-4 flex-grow justify-between items-start rounded-b-lg bg-red-950 shadow-inner">
                     {{ range .Slots }}
                         {{ template "slot" . }}
                     {{ end }}
