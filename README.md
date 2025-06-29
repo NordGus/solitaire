@@ -13,7 +13,7 @@ This project's environment is built upon `Visual Studio Code's Dev Containers`. 
 
 ### Steps
 
-1. Create an empty `.env` file in this repo's root.
+1. Copy `.env.example` into `.env` file in this repo's root.
 2. Reopen project in `Visual Studio Code's Dev Containers`, using the command pallette.
 3. Wait for project setup.
 4. Open a new terminal and run:
