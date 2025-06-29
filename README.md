@@ -1,10 +1,50 @@
-# ROM Stack
+# Tarot Solitaire
+
+## Environment setup
+
+### Requirements
+
+This project's environment is built upon `Visual Studio Code's Dev Containers`. So you need:
+
+- `Visual Studio Code`
+  - `Dev Containers Extension`
+- `Docker`
+  - `Docker Compose`
+
+### Steps
+
+1. Create an empty `.env` file in this repo's root.
+2. Reopen project in `Visual Studio Code's Dev Containers`, using the command pallette.
+3. Wait for project setup.
+4. Open a new terminal and run:
+
+    ```shell
+    air
+    ```
+
+5. Start Hacking.
+
+## Relevant information
+
+This project only implements one game, just to see the viability of using the following tech:
+
+- Web Components
+- HTMX
+- DOM Events for game implementation
+- Drag-n-Drop Web Standard API
+
+Additionally I wanted to reverse engineered the game functionality from a video of the game working.
+But I did not implement features like reverse moves, win conditions and generate new initial states.
+
+## Post-mortem
+
+## ROM Stack
 
 A Simple scaffold template to start building web apps with Go, HTMX and Web Components.
 
 > _I have no idea what I'm doing_ - NordGus
 
-## Why ROM Stack?
+### Why ROM Stack?
 
 I discovered Go via a podcast talking about [Buffalo](https://gobuffalo.io), since then I was
 fascinated with the possibility of shipping all the required data (files, templates, images,
@@ -14,7 +54,7 @@ assets, etc.) inside a single Go executable. To the point that one of my first e
 It reminded me of the old cartridge-based game consoles and their ROMs from my childhood. So that's
 why I decided to call it the ROM Stack, a Tech Stack designed to build ROM-like applications with Go.
 
-## Did I forget to include batteries?
+### Did I forget to include batteries?
 
 This is a simple setup, I've designed it to help me reduce friction between
 idea and execution for my side-projects.
@@ -27,9 +67,9 @@ And also has a `nvm` setup to work on a local environment.
 
 > But you're right. I completely forgot.
 
-## So I used the template, now what?
+### So I used the template, now what?
 
-### if you are working with the `devcontainer` setup
+#### if you are working with the `devcontainer` setup
 
 1. Install the tools needed by the Go extension.
 2. Run `go mod edit -module <module name>` to rename the Go module.
@@ -37,7 +77,7 @@ And also has a `nvm` setup to work on a local environment.
 4. Rename the project inside the `package.json`.
 5. Run `npm install` to update your `package-lock.json`.
 
-### If you are working locally
+#### If you are working locally
 
 1. Run `go mod edit <module name>` to rename the Go module.
 2. Rename the project inside the `package.json`.
@@ -45,7 +85,7 @@ And also has a `nvm` setup to work on a local environment.
 4. Run `npm install` to download Node dependencies.
 5. Install `air` by running `go install github.com/cosmtrek/air@latest`.
 
-## Roadmap
+### Roadmap
 
 - [x] Make the proof-of-concept.
 - [x] Write my own manifesto-like `README.md`.
@@ -65,7 +105,7 @@ And also has a `nvm` setup to work on a local environment.
 - [ ] Stop procrastinating.
 - [ ] Stop making checklist I can't complete.
 
-## Important
+### Important
 
 **I have no idea what I'm doing**, so I do not recommend use this template for
 production and any-scale deployments beyond personal education without heavy
