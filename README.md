@@ -47,7 +47,7 @@ at least with Google Chrome, sadly it is not.
 
 3. Stale references to old nodes on in the implementation was a pain in the ass.
 
-4. I still suck at OOP for game programming.
+4. Direct DOM manipulation for this kind of projects is a pain in the ass.
 
 ## Check this full game of the PoC on Youtube
 
