@@ -47,6 +47,8 @@ at least with Google Chrome, sadly it is not.
 
 3. Stale references to old nodes on in the implementation was a pain in the ass.
 
+4. I still suck at OOP.
+
 ## ROM Stack
 
 A Simple scaffold template to start building web apps with Go, HTMX and Web Components.
