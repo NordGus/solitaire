@@ -38,6 +38,11 @@ But I did not implement features like reverse moves, win conditions and generate
 
 ## Post-mortem
 
+1. This project was built using [MDN's Drag and Drop API reference](https://developer.mozilla.org/en-US/docs/Web/API/HTML_Drag_and_Drop_API),
+so the sadly the project can only be run on Firefox at the moment because I didn't tried to make it
+run in multiple browsers. Which is a little frustrating because I was expecting the API to be compatible
+at least with Google Chrome, sadly it is not.
+
 ## ROM Stack
 
 A Simple scaffold template to start building web apps with Go, HTMX and Web Components.
