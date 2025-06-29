@@ -43,6 +43,10 @@ so the sadly the project can only be run on Firefox at the moment because I didn
 run in multiple browsers. Which is a little frustrating because I was expecting the API to be compatible
 at least with Google Chrome, sadly it is not.
 
+2. Before calling it quits, I made a pretty rudimentary proof-of-concept.
+
+3. Stale references to old nodes on in the implementation was a pain in the ass.
+
 ## ROM Stack
 
 A Simple scaffold template to start building web apps with Go, HTMX and Web Components.
