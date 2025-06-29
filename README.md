@@ -47,7 +47,11 @@ at least with Google Chrome, sadly it is not.
 
 3. Stale references to old nodes on in the implementation was a pain in the ass.
 
-4. I still suck at OOP.
+4. I still suck at OOP for game programming.
+
+## Check this full game of the PoC on Youtube
+
+[![Tarot Solitaire PoC Full Game](https://img.youtube.com/vi/s6XYAYwjfaw/0.jpg)](https://www.youtube.com/watch?v=s6XYAYwjfaw)
 
 ## ROM Stack
 
